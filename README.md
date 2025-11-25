@@ -1,7 +1,7 @@
 <h1>PT Piranha</h1>
 PT Piranha is a Winform application for duplicating YAMLs.<br/>
 Automaticly instances file names and player names.<br/>
-![YAML Generator](/Resources/YAML Generator.png)
+<img src="Resources/YAML Generator.png" alt="YAML Generator" height="500" width="500" align="top"/>
 <h2>Archipelago</h2>
 https://archipelago.gg/ is a tool for generating multiworld randomizers.<br/>
 A YAML describes the rules for what gets randomized in a given game for a given player.
