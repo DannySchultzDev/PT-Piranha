@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MWSchema"
+    targetNamespace="http://tempuri.org/MWSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/MWSchema.xsd"
+    xmlns:mstns="http://tempuri.org/MWSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+	<xs:element name = "Root">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref = "Game" minOccurs = "0" maxOccurs = "unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name = "Game" type = "GameType"/>
+
+	<xs:complexType name = "GameType">
+		<xs:sequence>
+			<xs:element ref = "ItemGroup" minOccurs = "0" maxOccurs = "unbounded"/>
+		</xs:sequence>
+		<xs:attribute name = "Name" type = "xs:string" use = "required"/>
+		<xs:attribute name = "Player" type = "xs:string" use = "required"/>
+		<xs:attribute name = "Count" type = "xs:unsignedInt" use = "required"/>
+	</xs:complexType>
+	
+	<xs:element name = "ItemGroup" type = "ItemGroupType"/>
+	
+	<xs:complexType name = "ItemGroupType">
+		<xs:sequence>
+			<xs:element ref = "ItemGroupPart" minOccurs = "0" maxOccurs = "unbounded"/>
+			<xs:element ref = "ColorGradient"/>
+			<xs:element ref = "ClearColor"/>
+		</xs:sequence>
+		<xs:attribute name = "Name" type = "xs:string" use = "required"/>
+		<xs:attribute name = "IsLocation" type = "xs:boolean" use = "required"/>
+	</xs:complexType>
+	
+	<xs:element name = "ItemGroupPart" type = "ItemGroupPartType"/>
+	
+	<xs:complexType name = "ItemGroupPartType">
+		<xs:attribute name = "Name" type = "xs:string" use = "required"/>
+	</xs:complexType>
+	
+	<xs:element name = "ColorGradient" type = "GradientType"/>
+	
+	<xs:complexType name = "GradientType">
+		<xs:sequence>
+			<xs:element ref = "Color" maxOccurs = "unbounded"/>
+		</xs:sequence>
+		<xs:attribute name = "GradientStyle" type = "xs:unsignedInt" use = "required"/>
+	</xs:complexType>
+
+	<xs:element name = "Color" type = "ColorType"/>
+	<xs:element name = "ClearColor" type = "ColorType"/>
+	
+	<xs:complexType name = "ColorType">
+		<xs:attribute name = "Red" type = "xs:int" use = "required"/>
+		<xs:attribute name = "Green" type = "xs:int" use = "required"/>
+		<xs:attribute name = "Blue" type = "xs:int" use = "required"/>
+		<xs:attribute name = "Weight" type = "xs:float" use = "required"/>
+	</xs:complexType>	
+</xs:schema>

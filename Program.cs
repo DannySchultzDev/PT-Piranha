@@ -16,7 +16,7 @@ namespace PT_Piranha
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new YAMLGEN());
+			Application.Run(new Main());
 		}
 	}
 }

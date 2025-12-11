@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Archipelago.MultiClient.Net, Version=6.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Archipelago.MultiClient.Net.6.7.0\lib\net45\Archipelago.MultiClient.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Archipelago.MultiClient.Net.6.7.0\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -46,6 +52,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MWGEN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MWGEN.Designer.cs">
+      <DependentUpon>MWGEN.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MWSchema.cs">
+      <DependentUpon>MWSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="World.cs" />
     <Compile Include="YAMLGEN.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +76,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MWGEN.resx">
+      <DependentUpon>MWGEN.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -67,6 +95,10 @@
     <EmbeddedResource Include="YAMLGEN.resx">
       <DependentUpon>YAMLGEN.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="MWSchema.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -82,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\OpenfileDialog.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icon Flat.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

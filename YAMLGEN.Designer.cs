@@ -31,15 +31,15 @@
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.inputFileLabel = new System.Windows.Forms.Label();
 			this.inputFileTextBox = new System.Windows.Forms.TextBox();
-			this.inputFileButton = new System.Windows.Forms.Button();
 			this.outputFolderLabel = new System.Windows.Forms.Label();
 			this.outputFolderTextBox = new System.Windows.Forms.TextBox();
-			this.outputFolderButton = new System.Windows.Forms.Button();
 			this.playerLabel = new System.Windows.Forms.Label();
 			this.playerTextBox = new System.Windows.Forms.TextBox();
 			this.countLabel = new System.Windows.Forms.Label();
 			this.countTextBox = new System.Windows.Forms.TextBox();
 			this.generateButton = new System.Windows.Forms.Button();
+			this.inputFileButton = new System.Windows.Forms.Button();
+			this.outputFolderButton = new System.Windows.Forms.Button();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -94,17 +94,6 @@
 			this.inputFileTextBox.Size = new System.Drawing.Size(405, 26);
 			this.inputFileTextBox.TabIndex = 1;
 			// 
-			// inputFileButton
-			// 
-			this.inputFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.inputFileButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
-			this.inputFileButton.Location = new System.Drawing.Point(414, 41);
-			this.inputFileButton.Name = "inputFileButton";
-			this.inputFileButton.Size = new System.Drawing.Size(97, 32);
-			this.inputFileButton.TabIndex = 2;
-			this.inputFileButton.UseVisualStyleBackColor = true;
-			this.inputFileButton.Click += new System.EventHandler(this.inputFileButton_Click);
-			// 
 			// outputFolderLabel
 			// 
 			this.outputFolderLabel.AutoSize = true;
@@ -123,17 +112,6 @@
 			this.outputFolderTextBox.Name = "outputFolderTextBox";
 			this.outputFolderTextBox.Size = new System.Drawing.Size(405, 26);
 			this.outputFolderTextBox.TabIndex = 4;
-			// 
-			// outputFolderButton
-			// 
-			this.outputFolderButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.outputFolderButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
-			this.outputFolderButton.Location = new System.Drawing.Point(414, 117);
-			this.outputFolderButton.Name = "outputFolderButton";
-			this.outputFolderButton.Size = new System.Drawing.Size(97, 32);
-			this.outputFolderButton.TabIndex = 5;
-			this.outputFolderButton.UseVisualStyleBackColor = true;
-			this.outputFolderButton.Click += new System.EventHandler(this.outputFolderButton_Click);
 			// 
 			// playerLabel
 			// 
@@ -186,6 +164,28 @@
 			this.generateButton.Text = "GENERATE";
 			this.generateButton.UseVisualStyleBackColor = true;
 			this.generateButton.Click += new System.EventHandler(this.generateButton_Click);
+			// 
+			// inputFileButton
+			// 
+			this.inputFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.inputFileButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
+			this.inputFileButton.Location = new System.Drawing.Point(414, 41);
+			this.inputFileButton.Name = "inputFileButton";
+			this.inputFileButton.Size = new System.Drawing.Size(97, 32);
+			this.inputFileButton.TabIndex = 2;
+			this.inputFileButton.UseVisualStyleBackColor = true;
+			this.inputFileButton.Click += new System.EventHandler(this.inputFileButton_Click);
+			// 
+			// outputFolderButton
+			// 
+			this.outputFolderButton.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.outputFolderButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
+			this.outputFolderButton.Location = new System.Drawing.Point(414, 117);
+			this.outputFolderButton.Name = "outputFolderButton";
+			this.outputFolderButton.Size = new System.Drawing.Size(97, 32);
+			this.outputFolderButton.TabIndex = 5;
+			this.outputFolderButton.UseVisualStyleBackColor = true;
+			this.outputFolderButton.Click += new System.EventHandler(this.outputFolderButton_Click);
 			// 
 			// YAMLGEN
 			// 
