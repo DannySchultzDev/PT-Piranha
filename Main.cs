@@ -111,9 +111,15 @@ namespace PT_Piranha
 							}
 						}
 
+						string playerName;
+						if (gameNode.Count > 1)
+							playerName = gameNode.Player + (worldIndex + 1).ToString(format);
+						else
+							playerName = gameNode.Player;
+
 						World world = new World(
 							gameNode.Name,
-							gameNode.Player + (worldIndex + 1).ToString(format),
+							playerName,
 							itemGroups);
 
 						world.Connect();
@@ -198,6 +204,12 @@ namespace PT_Piranha
 				itemGroupSize = bmp.Width / (float)columnCount;
 				rowCount = (int)(bmp.Height / itemGroupSize);
 			}
+
+			while ((rowCount * columnCount) - columnCount >= itemGroups.Count)
+				--rowCount;
+
+			if (rowCount == 1)
+				columnCount = itemGroups.Count;
 
 			for (int y = 0; y < bmp.Height; ++y)
 			{
