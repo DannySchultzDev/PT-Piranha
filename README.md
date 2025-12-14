@@ -15,7 +15,6 @@ When all worlds are done, all trackers stop tracking (Item received messages don
 Item received messages are not handled async (Upon receiving a bunch of items, the screen is redrawn for each one).<br/>
 Scout messages are not handled async (Upon joining, all locations are scouted causing massive load spike).<br/>
 Forcing file extension upon saving/loading Multiworld Tracker.<br/>
-Have pixels fill the Multiworld Tracker when row/column is empty.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
 Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
