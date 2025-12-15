@@ -260,11 +260,6 @@ namespace PT_Piranha
 		{
 			UpdatePicture();
 		}
-
-		private void generateMWButton_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 
 	public enum PictureArrangmentMode

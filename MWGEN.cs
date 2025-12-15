@@ -312,5 +312,77 @@ namespace PT_Piranha
 				MessageBox.Show("Could not Generate Multiworld Tracker: " + ex.Message);
 			}
 		}
+
+		private void AddMultiworldToTracker(object sender, EventArgs e)
+		{
+			try
+			{
+				OpenFileDialog openFileDialog = new OpenFileDialog();
+				if (openFileDialog.ShowDialog() != DialogResult.OK)
+					return;
+
+				Root rootNode;
+				XmlSerializer serializer = new XmlSerializer(typeof(Root));
+				using (StreamReader stream = new StreamReader(openFileDialog.FileName))
+				{
+					rootNode = serializer.Deserialize(stream) as Root;
+				}
+
+				foreach (GameType gameNode in rootNode.Game)
+				{
+					gamesDataGridView.Rows.Add();
+					DataGridViewRow gameRow = gamesDataGridView.Rows[gamesDataGridView.Rows.Count - 2];
+
+					int gameIndex = int.Parse((string)gameRow.Cells[0].FormattedValue);
+
+					gameRow.Cells[1].Value = gameNode.Name;
+					gameRow.Cells[2].Value = gameNode.Player;
+					gameRow.Cells[3].Value = gameNode.Count;
+
+					if (gameNode.ItemGroup != null)
+					{
+						foreach (ItemGroupType itemGroupNode in gameNode.ItemGroup)
+						{
+							itemGroupsDataGridView.Rows.Add();
+							DataGridViewRow itemGroupRow = itemGroupsDataGridView.Rows[itemGroupsDataGridView.Rows.Count - 2];
+						
+							int itemGroupIndex = int.Parse((string)itemGroupRow.Cells[0].FormattedValue);
+
+							itemGroupRow.Cells[1].Value = itemGroupNode.Name;
+							itemGroupRow.Cells[2].Value = gameIndex.ToString();
+							itemGroupRow.Cells[3].Value = itemGroupNode.IsLocation;
+
+							Gradient gradient = new Gradient(itemGroupNode.ColorGradient);
+
+							itemGroupRow.Cells[4].Tag = gradient.GetFirstColor();
+							itemGroupRow.Cells[5].Tag = gradient.GetLastColor();
+
+							itemGroupRow.Cells[6].Tag = Color.FromArgb(
+								itemGroupNode.ClearColor.Red,
+								itemGroupNode.ClearColor.Green,
+								itemGroupNode.ClearColor.Blue);
+
+							if (itemGroupNode.ItemGroupPart != null)
+							{
+								foreach (ItemGroupPartType itemGroupPartNode in itemGroupNode.ItemGroupPart)
+								{
+									itemGroupPartsDataGridView.Rows.Add();
+									DataGridViewRow itemGroupPartRow = itemGroupPartsDataGridView.Rows[itemGroupPartsDataGridView.Rows.Count - 2];
+
+									itemGroupPartRow.Cells[1].Value = itemGroupPartNode.Name;
+									itemGroupPartRow.Cells[2].Value = itemGroupIndex.ToString();
+								}
+							}
+						}
+					}
+				}
+
+				itemGroupsDataGridView.Refresh();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Could not add Multiworld Tracker: " + ex.Message);
+			}
+		}
 	}
 }

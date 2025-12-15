@@ -58,6 +58,7 @@
 			this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
 			this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
 			this.dataGridViewButtonColumn3 = new System.Windows.Forms.DataGridViewButtonColumn();
+			this.addWorldButton = new System.Windows.Forms.Button();
 			this.outerTableLayout.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.outerSplitContainer)).BeginInit();
 			this.outerSplitContainer.Panel1.SuspendLayout();
@@ -77,14 +78,12 @@
 			// 
 			// outerTableLayout
 			// 
-			this.outerTableLayout.ColumnCount = 1;
-			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+			this.outerTableLayout.ColumnCount = 2;
+			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+			this.outerTableLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
 			this.outerTableLayout.Controls.Add(this.outerSplitContainer, 0, 0);
 			this.outerTableLayout.Controls.Add(this.generateButton, 0, 1);
+			this.outerTableLayout.Controls.Add(this.addWorldButton, 1, 1);
 			this.outerTableLayout.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.outerTableLayout.Location = new System.Drawing.Point(0, 0);
 			this.outerTableLayout.Name = "outerTableLayout";
@@ -96,6 +95,7 @@
 			// 
 			// outerSplitContainer
 			// 
+			this.outerTableLayout.SetColumnSpan(this.outerSplitContainer, 2);
 			this.outerSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.outerSplitContainer.Location = new System.Drawing.Point(3, 3);
 			this.outerSplitContainer.Name = "outerSplitContainer";
@@ -367,9 +367,9 @@
 			this.generateButton.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.generateButton.Location = new System.Drawing.Point(3, 611);
 			this.generateButton.Name = "generateButton";
-			this.generateButton.Size = new System.Drawing.Size(794, 44);
+			this.generateButton.Size = new System.Drawing.Size(394, 44);
 			this.generateButton.TabIndex = 1;
-			this.generateButton.Text = "GENERATE";
+			this.generateButton.Text = "Generate Multiworld Tracker";
 			this.generateButton.UseVisualStyleBackColor = true;
 			this.generateButton.Click += new System.EventHandler(this.Generate);
 			// 
@@ -396,6 +396,17 @@
 			this.dataGridViewButtonColumn3.MinimumWidth = 8;
 			this.dataGridViewButtonColumn3.Name = "dataGridViewButtonColumn3";
 			this.dataGridViewButtonColumn3.Width = 121;
+			// 
+			// addWorldButton
+			// 
+			this.addWorldButton.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.addWorldButton.Location = new System.Drawing.Point(403, 611);
+			this.addWorldButton.Name = "addWorldButton";
+			this.addWorldButton.Size = new System.Drawing.Size(394, 44);
+			this.addWorldButton.TabIndex = 2;
+			this.addWorldButton.Text = "Add Existing Multiworld Tracker";
+			this.addWorldButton.UseVisualStyleBackColor = true;
+			this.addWorldButton.Click += new System.EventHandler(this.AddMultiworldToTracker);
 			// 
 			// MWGEN
 			// 
@@ -460,5 +471,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupPartIndexColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupPartNameColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupColumn;
+		private System.Windows.Forms.Button addWorldButton;
 	}
 }

@@ -284,5 +284,39 @@ namespace PT_Piranha
 			else
 				return Color.FromArgb(255, v, p, q);
 		}
+
+		public Color GetFirstColor()
+		{
+			float lowestWeight = colors.First().weight;
+			Color lowestColor = colors.First().color;
+
+			foreach ((float weight, Color color) color in colors)
+			{
+				if (color.weight < lowestWeight)
+				{
+					lowestWeight = color.weight;
+					lowestColor = color.color;
+				}
+			}
+
+			return lowestColor;
+		}
+
+		public Color GetLastColor()
+		{
+			float heighestWeight = colors.Last().weight;
+			Color heighestColor = colors.Last().color;
+
+			foreach ((float weight, Color color) color in colors)
+			{
+				if (color.weight > heighestWeight)
+				{
+					heighestWeight = color.weight;
+					heighestColor = color.color;
+				}
+			}
+
+			return heighestColor;
+		}
 	}
 }
