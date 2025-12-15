@@ -16,6 +16,8 @@ Item received messages are not handled async (Upon receiving a bunch of items, t
 Scout messages are not handled async (Upon joining, all locations are scouted causing massive load spike).<br/>
 Forcing file extension upon saving/loading Multiworld Tracker.<br/>
 There is no gitignore file.<br/>
+Remember last set IP and Port.<br/>
+Give an option to hide IP and Port.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
 Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
