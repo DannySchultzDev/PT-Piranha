@@ -4,7 +4,7 @@ PT Piranha is a Winform application that acts as a Multiworld Tracker for archip
 <h2>Archipelago</h2>
 https://archipelago.gg/ is a tool for generating multiworld randomizers.<br/>
 <h2>Purpose</h2>
-PT Pirhana was created to assist in Centipelago challenges which require completing a multiworld consisting of 100 copies of the same world.<br/>
+PT Piranha was created to assist in Centipelago challenges which require completing a multiworld consisting of 100 copies of the same world.<br/>
 The way PT Piranha assists is by allowing the user to duplicate YAMLs quickly, and by allowing them to track progress over all of their worlds at once in one big display.
 <h2>Future Plans</h2>
 Bug fixes, lots of them.<br/>
@@ -15,10 +15,11 @@ When all worlds are done, all trackers stop tracking (Item received messages don
 Item received messages are not handled async (Upon receiving a bunch of items, the screen is redrawn for each one).<br/>
 Scout messages are not handled async (Upon joining, all locations are scouted causing massive load spike).<br/>
 Forcing file extension upon saving/loading Multiworld Tracker.<br/>
+There is no gitignore file.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
 Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
-Allowing users to edit Multiworld Trackers after creation.<br/>
+Allowing users to edit Multiworld Trackers after creation. (Workaround by Generating a new Multiworld and then adding the tracker to edit with the "Add Existing Multiworld Tracker" button.)<br/>
 Adding more display options for the Multiworld Tracker viewer (Seperated by game, jumbled, count to size correlated, voronoi).<br/>
 Image support for clear color.<br/>
 Additional Gradient Styles (clamp to next).
