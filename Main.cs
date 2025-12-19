@@ -29,6 +29,13 @@ namespace PT_Piranha
 		private Color fillerColor = Color.White;
 		private Bitmap bmp = new Bitmap(1, 1);
 
+		private static readonly string logFolderpath = Path.Combine(
+			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+			"PT Piranha");
+
+		private static readonly string logFilepath = Path.Combine(
+			logFolderpath, Guid.NewGuid().ToString() + ".txt");
+
 		public Main()
 		{
 			if (instance == null)
@@ -228,7 +235,12 @@ namespace PT_Piranha
 			}
 		}
 
-		public void SetStatus(string status)
+		/// <summary>
+		/// Sets the status on the status strip and log the status.
+		/// </summary>
+		/// <param name="status">The status to set</param>
+		/// <param name="quiet">When set, only log the status, don't set the status strip</param>
+		public void SetStatus(string status, bool quiet = false)
 		{
 			if (InvokeRequired)
 			{
@@ -236,7 +248,16 @@ namespace PT_Piranha
 				return;
 			}
 
-			statusLabel.Text = status;
+			if (!quiet)
+				statusLabel.Text = status;
+
+			if (!Directory.Exists(logFolderpath))
+				Directory.CreateDirectory(logFolderpath);
+
+			if (!File.Exists(logFilepath))
+				File.Create(logFilepath).Close();
+
+			File.AppendAllText(logFilepath, status + " " + DateTime.Now.ToString() + "\r\n");
 		}
 
 		public (string IP, int port) GetConnectString()
@@ -259,6 +280,21 @@ namespace PT_Piranha
 		private void Main_ResizeEnd(object sender, EventArgs e)
 		{
 			UpdatePicture();
+		}
+
+		private void Main_Load(object sender, EventArgs e)
+		{
+			SetStatus("PT Piranha started");
+
+			//Delete old logs
+			foreach (string file in Directory.GetFiles(logFolderpath))
+			{
+				if (DateTime.Now - File.GetLastWriteTime(file) > TimeSpan.FromDays(30))
+				{
+					File.Delete(file);
+					SetStatus("Deleted old log: " + Path.GetFileName(file));
+				}
+			}
 		}
 	}
 

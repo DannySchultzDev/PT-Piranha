@@ -43,6 +43,8 @@
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.mainPictureBox = new System.Windows.Forms.PictureBox();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
+			this.statusSpringLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.statusPercentageBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.mainToolStrip.SuspendLayout();
 			this.mainStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
@@ -150,6 +152,8 @@
 			this.mainStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
 			this.mainStatusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.mainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusPercentageBar,
+            this.statusSpringLabel,
             this.statusLabel});
 			this.mainStatusStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainStatusStrip.Name = "mainStatusStrip";
@@ -198,6 +202,17 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
 			// 
+			// statusSpringLabel
+			// 
+			this.statusSpringLabel.Name = "statusSpringLabel";
+			this.statusSpringLabel.Size = new System.Drawing.Size(370, 25);
+			this.statusSpringLabel.Spring = true;
+			// 
+			// statusPercentageBar
+			// 
+			this.statusPercentageBar.Name = "statusPercentageBar";
+			this.statusPercentageBar.Size = new System.Drawing.Size(300, 24);
+			// 
 			// Main
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -207,6 +222,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "Main";
 			this.Text = "PT Piranha";
+			this.Load += new System.EventHandler(this.Main_Load);
 			this.ResizeEnd += new System.EventHandler(this.Main_ResizeEnd);
 			this.mainToolStrip.ResumeLayout(false);
 			this.mainToolStrip.PerformLayout();
@@ -240,5 +256,7 @@
 		private System.Windows.Forms.ToolStripSeparator fileSeparator;
 		private System.Windows.Forms.ToolStripMenuItem generateMWButton;
 		private System.Windows.Forms.ToolStripMenuItem loadMWButton;
+		private System.Windows.Forms.ToolStripStatusLabel statusSpringLabel;
+		private System.Windows.Forms.ToolStripProgressBar statusPercentageBar;
 	}
 }
