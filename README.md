@@ -61,7 +61,6 @@ If you need to make an edit to your Multiworld Tracker, you can reopen the Multi
 Bug fixes/minor changes, lots of them.<br/>
 Current issues include:<br/>
 Joining a room causes clients to complain about a bad request.<br/>
-Forcing file extension upon saving/loading Multiworld Tracker.<br/>
 Remember last set IP and Port.<br/>
 Give an option to hide IP and Port.<br/>
 Add field for password.<br/>

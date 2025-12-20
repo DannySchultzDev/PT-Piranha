@@ -298,6 +298,7 @@ namespace PT_Piranha
 				root.Game = gameNodes.ToArray();
 
 				SaveFileDialog saveFileDialog = new SaveFileDialog();
+				saveFileDialog.Filter = "piranha files (*.piranha)|*.piranha|xml files (*.xml)|*.xml|All files (*.*)|*.*";
 				if (saveFileDialog.ShowDialog() != DialogResult.OK)
 					return;
 
@@ -319,6 +320,7 @@ namespace PT_Piranha
 			try
 			{
 				OpenFileDialog openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "piranha files (*.piranha)|*.piranha|xml files (*.xml)|*.xml|All files (*.*)|*.*";
 				if (openFileDialog.ShowDialog() != DialogResult.OK)
 					return;
 
