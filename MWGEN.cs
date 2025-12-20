@@ -313,17 +313,33 @@ namespace PT_Piranha
 			}
 		}
 
-		private void AddMultiworldToTracker(object sender, EventArgs e)
+		public void AddMultiworldToTracker(object sender, EventArgs e)
 		{
+			string filepath;
 			try
 			{
 				OpenFileDialog openFileDialog = new OpenFileDialog();
 				if (openFileDialog.ShowDialog() != DialogResult.OK)
 					return;
 
+				filepath = openFileDialog.FileName;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("Could not add Multiworld Tracker: " + ex.Message);
+				return;
+			}
+
+			AddMultiworldToTracker(filepath);
+		}
+
+		public void AddMultiworldToTracker(string filepath)
+		{
+			try
+			{
 				Root rootNode;
 				XmlSerializer serializer = new XmlSerializer(typeof(Root));
-				using (StreamReader stream = new StreamReader(openFileDialog.FileName))
+				using (StreamReader stream = new StreamReader(filepath))
 				{
 					rootNode = serializer.Deserialize(stream) as Root;
 				}
@@ -345,7 +361,7 @@ namespace PT_Piranha
 						{
 							itemGroupsDataGridView.Rows.Add();
 							DataGridViewRow itemGroupRow = itemGroupsDataGridView.Rows[itemGroupsDataGridView.Rows.Count - 2];
-						
+
 							int itemGroupIndex = int.Parse((string)itemGroupRow.Cells[0].FormattedValue);
 
 							itemGroupRow.Cells[1].Value = itemGroupNode.Name;

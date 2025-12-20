@@ -70,6 +70,20 @@ namespace PT_Piranha
 			mwGen.Show();
 		}
 
+		private void EditMWButton_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			if (openFileDialog.ShowDialog() != DialogResult.OK)
+			{
+				Worker.SetStatus("Edit Multiworld Tracker canceled.");
+				return;
+			}
+
+			MWGEN mwGEN = new MWGEN();
+			mwGEN.AddMultiworldToTracker(openFileDialog.FileName);
+			mwGEN.Show();
+		}
+
 		public void LoadGame(string filepath)
 		{
 			try

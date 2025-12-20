@@ -45,6 +45,7 @@
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.mainPictureBox = new System.Windows.Forms.PictureBox();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
+			this.editMultiworldTrackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainToolStrip.SuspendLayout();
 			this.mainStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
@@ -113,6 +114,7 @@
             this.generateYAMLsButton,
             this.fileSeparator,
             this.generateMWButton,
+            this.editMultiworldTrackerToolStripMenuItem,
             this.loadMWButton});
 			this.fileDropDown.Image = ((System.Drawing.Image)(resources.GetObject("fileDropDown.Image")));
 			this.fileDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -171,7 +173,7 @@
 			// statusSpringLabel
 			// 
 			this.statusSpringLabel.Name = "statusSpringLabel";
-			this.statusSpringLabel.Size = new System.Drawing.Size(170, 25);
+			this.statusSpringLabel.Size = new System.Drawing.Size(216, 25);
 			this.statusSpringLabel.Spring = true;
 			// 
 			// statusLabel
@@ -185,7 +187,7 @@
 			this.mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
 			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(658, 374);
+			this.mainPictureBox.Size = new System.Drawing.Size(658, 378);
 			this.mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.mainPictureBox.TabIndex = 1;
 			this.mainPictureBox.TabStop = false;
@@ -200,7 +202,7 @@
 			// mainToolStripContainer.ContentPanel
 			// 
 			this.mainToolStripContainer.ContentPanel.Controls.Add(this.mainPictureBox);
-			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 374);
+			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 378);
 			this.mainToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainToolStripContainer.LeftToolStripPanelVisible = false;
 			this.mainToolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -213,6 +215,13 @@
 			// mainToolStripContainer.TopToolStripPanel
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
+			// 
+			// editMultiworldTrackerToolStripMenuItem
+			// 
+			this.editMultiworldTrackerToolStripMenuItem.Name = "editMultiworldTrackerToolStripMenuItem";
+			this.editMultiworldTrackerToolStripMenuItem.Size = new System.Drawing.Size(333, 34);
+			this.editMultiworldTrackerToolStripMenuItem.Text = "Edit Multiworld Tracker";
+			this.editMultiworldTrackerToolStripMenuItem.Click += new System.EventHandler(this.EditMWButton_Click);
 			// 
 			// Main
 			// 
@@ -259,5 +268,6 @@
 		private System.Windows.Forms.ToolStripMenuItem loadMWButton;
 		private System.Windows.Forms.ToolStripStatusLabel statusSpringLabel;
 		private System.Windows.Forms.ToolStripProgressBar statusPercentageBar;
+		private System.Windows.Forms.ToolStripMenuItem editMultiworldTrackerToolStripMenuItem;
 	}
 }
