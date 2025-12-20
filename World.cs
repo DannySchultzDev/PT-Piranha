@@ -14,7 +14,7 @@ using Color = System.Drawing.Color;
 
 namespace PT_Piranha
 {
-	internal class World
+	public class World
 	{
 		public string game;
 		public string player;
@@ -52,48 +52,46 @@ namespace PT_Piranha
 				session.Items.ItemReceived += ReceivedItem;
 				session.Locations.CheckedLocationsUpdated += LocationChecked;
 
-				Main.instance.SetStatus("Login for " + player + " was " + (loginResult.Successful ? "" : "not ") + "successful.");
+				Worker.SetStatus("Login for " + player + " was " + (loginResult.Successful ? "" : "not ") + "successful.");
 			}
 			catch (Exception ex)
 			{
-				Main.instance.SetStatus("Could not connect " + player + " to " + game + ": " + ex.Message);
+				Worker.SetStatus("Could not connect " + player + " to " + game + ": " + ex.Message);
 			}
 		}
 
 		public void ReceivedItem(ReceivedItemsHelper helper)
 		{
+			ItemInfo itemInfo = helper.DequeueItem();
+			while (itemInfo != null)
 			{
-				ItemInfo itemInfo = helper.DequeueItem();
-				while (itemInfo != null)
+				Worker.SetStatus(player + " received " + itemInfo.ItemName);
+				foreach (ItemGroup itemGroup in itemGroups)
 				{
-					Main.instance.SetStatus(player + " received " + itemInfo.ItemName);
-					foreach (ItemGroup itemGroup in itemGroups)
+					if (itemGroup.isLocations)
+						continue;
+
+
+					if (itemInfo.ItemName.Equals(itemGroup.name))
 					{
-						if (itemGroup.isLocations)
-							continue;
-
-
-						if (itemInfo.ItemName.Equals(itemGroup.name))
+						++itemGroup.count;
+					}
+					else
+					{
+						foreach (string target in itemGroup.targets)
 						{
-							++itemGroup.count;
-						}
-						else
-						{
-							foreach (string target in itemGroup.targets)
+							if (itemInfo.ItemName.Equals(target))
 							{
-								if (itemInfo.ItemName.Equals(target))
-								{
-									++itemGroup.count;
-									break;
-								}
+								++itemGroup.count;
+								break;
 							}
 						}
 					}
-					itemInfo = helper.DequeueItem();
 				}
+				itemInfo = helper.DequeueItem();
 			}
 
-			Main.instance.UpdatePicture();
+			Worker.Redraw();
 		}
 
 		private void LocationChecked(System.Collections.ObjectModel.ReadOnlyCollection<long> newCheckedLocations)
@@ -108,7 +106,7 @@ namespace PT_Piranha
 				}
 			}
 			if (needUpdate)
-				Main.instance.UpdatePicture();
+				Worker.Redraw();
 		}
 
 		public void SetUpMaxLocations()
@@ -144,7 +142,7 @@ namespace PT_Piranha
 		}
 	}
 
-	internal class ItemGroup
+	public class ItemGroup
 	{
 		public string name;
 		

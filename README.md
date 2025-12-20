@@ -58,13 +58,11 @@ Item Group Parts represent types, which don't have to be unique items. For insta
 Save off your Multiworld Tracker and send the file to the person who requested it.<br/>
 If you need to make an edit to your Multiworld Tracker, you can reopen the Multiworld Tracker Generator, click Add Existing Multiworld Tracker, and then select your file.<br/>
 <h2>Future Plans</h2>
-Bug fixes, lots of them.<br/>
+Bug fixes/minor changes, lots of them.<br/>
 Current issues include:<br/>
 Joining a room causes clients to complain about a bad request.<br/>
 When a world is completed its tracker stops tracking.<br/>
 When all worlds are done, all trackers stop tracking (Item received messages don't come in).<br/>
-Item received messages are not handled async (Upon receiving a bunch of items, the screen is redrawn for each one).<br/>
-Scout messages are not handled async (Upon joining, all locations are scouted causing massive load spike).<br/>
 Forcing file extension upon saving/loading Multiworld Tracker.<br/>
 Remember last set IP and Port.<br/>
 Give an option to hide IP and Port.<br/>

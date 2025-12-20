@@ -67,6 +67,7 @@
     <Compile Include="MWSchema.cs">
       <DependentUpon>MWSchema.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Worker.cs" />
     <Compile Include="World.cs" />
     <Compile Include="YAMLGEN.cs">
       <SubType>Form</SubType>

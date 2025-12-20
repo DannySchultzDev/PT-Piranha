@@ -23,7 +23,7 @@ namespace PT_Piranha
 {
 	public partial class Main : Form
 	{
-		private List<World> worlds = new List<World>();
+		public List<World> worlds = new List<World>();
 		public static Main instance { get; private set; }
 		private PictureArrangmentMode pictureArrangmentMode = PictureArrangmentMode.FLUID;
 		private Color fillerColor = Color.White;
@@ -56,7 +56,7 @@ namespace PT_Piranha
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			if (openFileDialog.ShowDialog() != DialogResult.OK)
 			{
-				SetStatus("Load Multiworld Tracker canceled.");
+				Worker.SetStatus("Load Multiworld Tracker canceled.");
 				return;
 			}
 
@@ -69,7 +69,7 @@ namespace PT_Piranha
 			mwGen.Show();
 		}
 
-		public async void LoadGame(string filepath)
+		public void LoadGame(string filepath)
 		{
 			try
 			{
@@ -129,42 +129,19 @@ namespace PT_Piranha
 							playerName,
 							itemGroups);
 
-						world.Connect();
-
 						worlds.Add(world);
 					}
 				}
 
-				foreach (World world in worlds)
-				{
-					world.SetUpMaxLocations();
-
-					//Calculate item totals by scouting.
-					ILocationCheckHelper helper = world.session.Locations;
-					Task<Dictionary<long, ScoutedItemInfo>> scout = helper.ScoutLocationsAsync(false, helper.AllLocations.ToArray());
-					await scout.ConfigureAwait(false);
-					Dictionary<long, ScoutedItemInfo> scoutResults = scout.Result;
-
-					foreach (ScoutedItemInfo scoutedItemInfo in scoutResults.Values)
-					{
-						foreach (World receivingWorld in worlds)
-						{
-							if (receivingWorld.player.Equals(scoutedItemInfo.Player.Name))
-							{
-								receivingWorld.ScoutReceivedItem(scoutedItemInfo);
-								break;
-							}
-						}
-					}
-				}
+				Worker.ConnectAllWorlds();
 			}
 			catch (Exception ex)
 			{
-				statusLabel.Text = ex.Message;
+				Worker.SetStatus(ex.Message);
 			}
 			finally
 			{
-				UpdatePicture();
+				Worker.Redraw();
 			}
 		}
 
@@ -235,12 +212,7 @@ namespace PT_Piranha
 			}
 		}
 
-		/// <summary>
-		/// Sets the status on the status strip and log the status.
-		/// </summary>
-		/// <param name="status">The status to set</param>
-		/// <param name="quiet">When set, only log the status, don't set the status strip</param>
-		public void SetStatus(string status, bool quiet = false)
+		public void SetStatus(string status)
 		{
 			if (InvokeRequired)
 			{
@@ -248,16 +220,21 @@ namespace PT_Piranha
 				return;
 			}
 
-			if (!quiet)
-				statusLabel.Text = status;
+			statusLabel.Text = status;
+		}
 
-			if (!Directory.Exists(logFolderpath))
-				Directory.CreateDirectory(logFolderpath);
+		public void LogStatus(string status)
+		{
+			lock (logFilepath)
+			{
+				if (!Directory.Exists(logFolderpath))
+					Directory.CreateDirectory(logFolderpath);
 
-			if (!File.Exists(logFilepath))
-				File.Create(logFilepath).Close();
+				if (!File.Exists(logFilepath))
+					File.Create(logFilepath).Close();
 
-			File.AppendAllText(logFilepath, status + " " + DateTime.Now.ToString() + "\r\n");
+				File.AppendAllText(logFilepath, status + " " + DateTime.Now.ToString() + "\r\n");
+			}
 		}
 
 		public (string IP, int port) GetConnectString()
@@ -279,12 +256,12 @@ namespace PT_Piranha
 
 		private void Main_ResizeEnd(object sender, EventArgs e)
 		{
-			UpdatePicture();
+			Worker.Redraw();
 		}
 
 		private void Main_Load(object sender, EventArgs e)
 		{
-			SetStatus("PT Piranha started");
+			Worker.SetStatus("PT Piranha started");
 
 			//Delete old logs
 			foreach (string file in Directory.GetFiles(logFolderpath))
@@ -292,7 +269,7 @@ namespace PT_Piranha
 				if (DateTime.Now - File.GetLastWriteTime(file) > TimeSpan.FromDays(30))
 				{
 					File.Delete(file);
-					SetStatus("Deleted old log: " + Path.GetFileName(file));
+					Worker.SetStatus("Deleted old log: " + Path.GetFileName(file));
 				}
 			}
 		}
