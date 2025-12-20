@@ -61,13 +61,14 @@ If you need to make an edit to your Multiworld Tracker, you can reopen the Multi
 Bug fixes/minor changes, lots of them.<br/>
 Current issues include:<br/>
 Joining a room causes clients to complain about a bad request.<br/>
-When a world is completed its tracker stops tracking.<br/>
-When all worlds are done, all trackers stop tracking (Item received messages don't come in).<br/>
 Forcing file extension upon saving/loading Multiworld Tracker.<br/>
 Remember last set IP and Port.<br/>
 Give an option to hide IP and Port.<br/>
+Add field for password.<br/>
+Add auto refresh if disconnected or at least a button to reload.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
+Allow users to see what percentage completion each section is with tool tips.<br/>
 Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
 Allowing users to edit Multiworld Trackers after creation. (Workaround by Generating a new Multiworld and then adding the tracker to edit with the "Add Existing Multiworld Tracker" button.)<br/>
 Adding more display options for the Multiworld Tracker viewer (Seperated by game, jumbled, count to size correlated, voronoi).<br/>

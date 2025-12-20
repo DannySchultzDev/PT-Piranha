@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -158,6 +159,8 @@ namespace PT_Piranha
 				mainPictureBox.Height != mainPictureBox.Image.Height)
 				mainPictureBox.Image = new Bitmap(mainPictureBox.Width, mainPictureBox.Height);
 
+			UpdateProgressBar();
+
 			switch (pictureArrangmentMode)
 			{
 				case PictureArrangmentMode.FLUID:
@@ -168,6 +171,35 @@ namespace PT_Piranha
 			}
 
 			mainPictureBox.Refresh();
+		}
+
+		private void UpdateProgressBar()
+		{
+			List<ItemGroup> itemGroups = new List<ItemGroup>();
+			foreach (World world in worlds)
+				itemGroups.AddRange(world.itemGroups);
+
+			int currItems = 0;
+			int totalItems = 0;
+
+			foreach (ItemGroup itemGroup in itemGroups)
+			{
+				currItems += itemGroup.count;
+				totalItems += itemGroup.maxCount;
+			}
+
+			if (currItems > totalItems)
+				currItems = totalItems;
+
+			statusPercentageBar.Maximum = totalItems;
+
+			//Minimum set and unset to prevent the progress bar from glowing.
+			statusPercentageBar.Minimum = currItems;
+			statusPercentageBar.Value = currItems;
+			statusPercentageBar.Minimum = 0;
+
+			statusPercentageBar.ToolTipText = 
+				currItems.ToString() + " items collected out of " + totalItems.ToString();
 		}
 
 		private void UpdatePictureFluid()

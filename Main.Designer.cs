@@ -40,11 +40,11 @@
 			this.generateMWButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadMWButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
+			this.statusPercentageBar = new System.Windows.Forms.ToolStripProgressBar();
+			this.statusSpringLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.mainPictureBox = new System.Windows.Forms.PictureBox();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.statusSpringLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.statusPercentageBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.mainToolStrip.SuspendLayout();
 			this.mainStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
@@ -157,10 +157,22 @@
             this.statusLabel});
 			this.mainStatusStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainStatusStrip.Name = "mainStatusStrip";
+			this.mainStatusStrip.ShowItemToolTips = true;
 			this.mainStatusStrip.Size = new System.Drawing.Size(658, 32);
 			this.mainStatusStrip.SizingGrip = false;
 			this.mainStatusStrip.TabIndex = 0;
 			this.mainStatusStrip.Text = "statusStrip1";
+			// 
+			// statusPercentageBar
+			// 
+			this.statusPercentageBar.Name = "statusPercentageBar";
+			this.statusPercentageBar.Size = new System.Drawing.Size(300, 24);
+			// 
+			// statusSpringLabel
+			// 
+			this.statusSpringLabel.Name = "statusSpringLabel";
+			this.statusSpringLabel.Size = new System.Drawing.Size(170, 25);
+			this.statusSpringLabel.Spring = true;
 			// 
 			// statusLabel
 			// 
@@ -201,17 +213,6 @@
 			// mainToolStripContainer.TopToolStripPanel
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
-			// 
-			// statusSpringLabel
-			// 
-			this.statusSpringLabel.Name = "statusSpringLabel";
-			this.statusSpringLabel.Size = new System.Drawing.Size(370, 25);
-			this.statusSpringLabel.Spring = true;
-			// 
-			// statusPercentageBar
-			// 
-			this.statusPercentageBar.Name = "statusPercentageBar";
-			this.statusPercentageBar.Size = new System.Drawing.Size(300, 24);
 			// 
 			// Main
 			// 

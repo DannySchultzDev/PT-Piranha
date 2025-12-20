@@ -52,6 +52,8 @@ namespace PT_Piranha
 				session.Items.ItemReceived += ReceivedItem;
 				session.Locations.CheckedLocationsUpdated += LocationChecked;
 
+				LocationChecked(null);
+
 				Worker.SetStatus("Login for " + player + " was " + (loginResult.Successful ? "" : "not ") + "successful.");
 			}
 			catch (Exception ex)
