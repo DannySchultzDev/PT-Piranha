@@ -34,8 +34,11 @@ namespace PT_Piranha
 		{
 			try
 			{
-				(string IP, int port) connectString = Main.instance.GetConnectString();
-				session = ArchipelagoSessionFactory.CreateSession(connectString.IP, connectString.port);
+				string IP = RegistryHelper.GetValue(RegistryName.IP_CURRENT,
+					RegistryHelper.GetValue(RegistryName.IP_DEFAULT, "localhost"));
+				int port = RegistryHelper.GetValue(RegistryName.PORT_CURRENT,
+					RegistryHelper.GetValue(RegistryName.PORT_DEFAULT, 38281));
+				session = ArchipelagoSessionFactory.CreateSession(IP, port);
 				if (session == null)
 					throw new Exception("Session created was null.");
 
@@ -43,7 +46,10 @@ namespace PT_Piranha
 					game,
 					player,
 					Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems,
-					null,
+					new Version(
+						RegistryHelper.GetValue(RegistryName.VERSION_MAJOR, 0), 
+						RegistryHelper.GetValue(RegistryName.VERSION_MINOR, 6),
+						RegistryHelper.GetValue(RegistryName.VERSION_BUILD, 5)),
 					new string[] { "Tracker" });
 
 				if (loginResult == null)
@@ -55,6 +61,13 @@ namespace PT_Piranha
 				LocationChecked(null);
 
 				Worker.SetStatus("Login for " + player + " was " + (loginResult.Successful ? "" : "not ") + "successful.");
+				if (loginResult.Successful == false)
+				{
+					StringBuilder errors = new StringBuilder();
+					foreach (string error in (loginResult as LoginFailure).Errors)
+						errors.AppendLine(error);
+					Worker.SetStatus("Login failed: " + errors);
+				}
 			}
 			catch (Exception ex)
 			{

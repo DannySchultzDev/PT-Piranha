@@ -30,6 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
 			this.mainToolStrip = new System.Windows.Forms.ToolStrip();
+			this.resetButton = new System.Windows.Forms.ToolStripButton();
 			this.portTextBox = new System.Windows.Forms.ToolStripTextBox();
 			this.portLabel = new System.Windows.Forms.ToolStripLabel();
 			this.IPTextBox = new System.Windows.Forms.ToolStripTextBox();
@@ -38,21 +39,23 @@
 			this.generateYAMLsButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.fileSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.generateMWButton = new System.Windows.Forms.ToolStripMenuItem();
+			this.editMWButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.loadMWButton = new System.Windows.Forms.ToolStripMenuItem();
+			this.settingsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
+			this.connectionButton = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.statusPercentageBar = new System.Windows.Forms.ToolStripProgressBar();
 			this.statusSpringLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.mainPictureBox = new System.Windows.Forms.PictureBox();
 			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.editMultiworldTrackerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.mainPictureBox = new System.Windows.Forms.PictureBox();
 			this.mainToolStrip.SuspendLayout();
 			this.mainStatusStrip.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			this.mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
 			this.mainToolStripContainer.ContentPanel.SuspendLayout();
 			this.mainToolStripContainer.TopToolStripPanel.SuspendLayout();
 			this.mainToolStripContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// mainToolStrip
@@ -61,17 +64,32 @@
 			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.mainToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
 			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.resetButton,
             this.portTextBox,
             this.portLabel,
             this.IPTextBox,
             this.IPLabel,
-            this.fileDropDown});
+            this.fileDropDown,
+            this.settingsDropDown});
 			this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainToolStrip.Name = "mainToolStrip";
 			this.mainToolStrip.Size = new System.Drawing.Size(658, 34);
 			this.mainToolStrip.Stretch = true;
 			this.mainToolStrip.TabIndex = 0;
 			this.mainToolStrip.Text = "toolStrip1";
+			// 
+			// resetButton
+			// 
+			this.resetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.resetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.resetButton.Image = global::PT_Piranha.Properties.Resources.Restart;
+			this.resetButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.resetButton.Name = "resetButton";
+			this.resetButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+			this.resetButton.Size = new System.Drawing.Size(34, 29);
+			this.resetButton.Text = "toolStripButton1";
+			this.resetButton.ToolTipText = "Reset to defaults";
+			this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
 			// 
 			// portTextBox
 			// 
@@ -80,7 +98,7 @@
 			this.portTextBox.Name = "portTextBox";
 			this.portTextBox.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
 			this.portTextBox.Size = new System.Drawing.Size(100, 34);
-			this.portTextBox.Text = "38281";
+			this.portTextBox.Validated += new System.EventHandler(this.portTextBox_Validated);
 			// 
 			// portLabel
 			// 
@@ -97,7 +115,7 @@
 			this.IPTextBox.Name = "IPTextBox";
 			this.IPTextBox.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
 			this.IPTextBox.Size = new System.Drawing.Size(100, 34);
-			this.IPTextBox.Text = "localhost";
+			this.IPTextBox.Validated += new System.EventHandler(this.IPChanged);
 			// 
 			// IPLabel
 			// 
@@ -114,7 +132,7 @@
             this.generateYAMLsButton,
             this.fileSeparator,
             this.generateMWButton,
-            this.editMultiworldTrackerToolStripMenuItem,
+            this.editMWButton,
             this.loadMWButton});
 			this.fileDropDown.Image = ((System.Drawing.Image)(resources.GetObject("fileDropDown.Image")));
 			this.fileDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -142,12 +160,38 @@
 			this.generateMWButton.Text = "Generate Multiworld Tracker";
 			this.generateMWButton.Click += new System.EventHandler(this.GenerateMWButton_Click);
 			// 
+			// editMWButton
+			// 
+			this.editMWButton.Name = "editMWButton";
+			this.editMWButton.Size = new System.Drawing.Size(333, 34);
+			this.editMWButton.Text = "Edit Multiworld Tracker";
+			this.editMWButton.Click += new System.EventHandler(this.EditMWButton_Click);
+			// 
 			// loadMWButton
 			// 
 			this.loadMWButton.Name = "loadMWButton";
 			this.loadMWButton.Size = new System.Drawing.Size(333, 34);
 			this.loadMWButton.Text = "Load Multiworld Tracker";
 			this.loadMWButton.Click += new System.EventHandler(this.LoadGameButton_Click);
+			// 
+			// settingsDropDown
+			// 
+			this.settingsDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.settingsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectionButton});
+			this.settingsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("settingsDropDown.Image")));
+			this.settingsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.settingsDropDown.Name = "settingsDropDown";
+			this.settingsDropDown.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+			this.settingsDropDown.Size = new System.Drawing.Size(94, 29);
+			this.settingsDropDown.Text = "Settings";
+			// 
+			// connectionButton
+			// 
+			this.connectionButton.Name = "connectionButton";
+			this.connectionButton.Size = new System.Drawing.Size(204, 34);
+			this.connectionButton.Text = "Connection";
+			this.connectionButton.Click += new System.EventHandler(this.ConnectionSettingsButton_Click);
 			// 
 			// mainStatusStrip
 			// 
@@ -182,16 +226,6 @@
 			this.statusLabel.Size = new System.Drawing.Size(123, 25);
 			this.statusLabel.Text = "Current Status";
 			// 
-			// mainPictureBox
-			// 
-			this.mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
-			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(658, 378);
-			this.mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.mainPictureBox.TabIndex = 1;
-			this.mainPictureBox.TabStop = false;
-			// 
 			// mainToolStripContainer
 			// 
 			// 
@@ -202,7 +236,7 @@
 			// mainToolStripContainer.ContentPanel
 			// 
 			this.mainToolStripContainer.ContentPanel.Controls.Add(this.mainPictureBox);
-			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 378);
+			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 374);
 			this.mainToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainToolStripContainer.LeftToolStripPanelVisible = false;
 			this.mainToolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -216,12 +250,15 @@
 			// 
 			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
 			// 
-			// editMultiworldTrackerToolStripMenuItem
+			// mainPictureBox
 			// 
-			this.editMultiworldTrackerToolStripMenuItem.Name = "editMultiworldTrackerToolStripMenuItem";
-			this.editMultiworldTrackerToolStripMenuItem.Size = new System.Drawing.Size(333, 34);
-			this.editMultiworldTrackerToolStripMenuItem.Text = "Edit Multiworld Tracker";
-			this.editMultiworldTrackerToolStripMenuItem.Click += new System.EventHandler(this.EditMWButton_Click);
+			this.mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
+			this.mainPictureBox.Name = "mainPictureBox";
+			this.mainPictureBox.Size = new System.Drawing.Size(658, 374);
+			this.mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.mainPictureBox.TabIndex = 1;
+			this.mainPictureBox.TabStop = false;
 			// 
 			// Main
 			// 
@@ -238,7 +275,6 @@
 			this.mainToolStrip.PerformLayout();
 			this.mainStatusStrip.ResumeLayout(false);
 			this.mainStatusStrip.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
 			this.mainToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
 			this.mainToolStripContainer.BottomToolStripPanel.PerformLayout();
 			this.mainToolStripContainer.ContentPanel.ResumeLayout(false);
@@ -246,6 +282,7 @@
 			this.mainToolStripContainer.TopToolStripPanel.PerformLayout();
 			this.mainToolStripContainer.ResumeLayout(false);
 			this.mainToolStripContainer.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -268,6 +305,9 @@
 		private System.Windows.Forms.ToolStripMenuItem loadMWButton;
 		private System.Windows.Forms.ToolStripStatusLabel statusSpringLabel;
 		private System.Windows.Forms.ToolStripProgressBar statusPercentageBar;
-		private System.Windows.Forms.ToolStripMenuItem editMultiworldTrackerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem editMWButton;
+		private System.Windows.Forms.ToolStripDropDownButton settingsDropDown;
+		private System.Windows.Forms.ToolStripMenuItem connectionButton;
+		private System.Windows.Forms.ToolStripButton resetButton;
 	}
 }

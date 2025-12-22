@@ -285,23 +285,6 @@ namespace PT_Piranha
 			}
 		}
 
-		public (string IP, int port) GetConnectString()
-		{
-			string IP = IPTextBox.Text;
-			if (string.IsNullOrWhiteSpace(IP))
-				throw new Exception("IP field is empty.");
-
-			string portString = portTextBox.Text;
-			if (string.IsNullOrWhiteSpace(portString))
-				throw new Exception("Port field is empty.");
-			if (!int.TryParse(portTextBox.Text, out int port))
-				throw new Exception("Port is not an int");
-
-			return (IP, port);
-		}
-
-
-
 		private void Main_ResizeEnd(object sender, EventArgs e)
 		{
 			Worker.Redraw();
@@ -320,6 +303,57 @@ namespace PT_Piranha
 					Worker.SetStatus("Deleted old log: " + Path.GetFileName(file));
 				}
 			}
+
+			SetConnectionFields();
+		}
+
+		private void ConnectionSettingsButton_Click(object sender, EventArgs e)
+		{
+			ConnectionSettings connectionSettings = new ConnectionSettings();
+			if (connectionSettings.ShowDialog() == DialogResult.OK)
+				SetConnectionFields();
+		}
+
+		private void SetConnectionFields()
+		{
+			bool visible = RegistryHelper.GetValue(RegistryName.SHOW_CONNECTION_SETTINGS, 1) != 0;
+			IPLabel.Visible = visible;
+			IPTextBox.Visible = visible;
+			portLabel.Visible = visible;
+			portTextBox.Visible = visible;
+			resetButton.Visible = visible;
+
+
+			IPTextBox.Text = RegistryHelper.GetValue(RegistryName.IP_CURRENT,
+				RegistryHelper.GetValue(RegistryName.IP_DEFAULT, "localhost"));
+			portTextBox.Text = RegistryHelper.GetValue(RegistryName.PORT_CURRENT,
+				RegistryHelper.GetValue(RegistryName.PORT_DEFAULT, 38281)).ToString();
+		}
+
+		private void IPChanged(object sender, EventArgs e)
+		{
+			RegistryHelper.SetValue(RegistryName.IP_CURRENT, IPTextBox.Text);
+		}
+
+		private void portTextBox_Validated(object sender, EventArgs e)
+		{
+			if (int.TryParse(portTextBox.Text, out int port))
+				RegistryHelper.SetValue(RegistryName.PORT_CURRENT, port);
+			else
+			{
+				portTextBox.Text = RegistryHelper.GetValue(RegistryName.PORT_CURRENT,
+					RegistryHelper.GetValue(RegistryName.PORT_DEFAULT, 38281)).ToString();
+			}
+		}
+
+		private void resetButton_Click(object sender, EventArgs e)
+		{
+			RegistryHelper.SetValue(RegistryName.IP_CURRENT,
+				RegistryHelper.GetValue(RegistryName.IP_DEFAULT, "localhost"));
+			RegistryHelper.SetValue(RegistryName.PORT_CURRENT,
+				RegistryHelper.GetValue(RegistryName.PORT_DEFAULT, 38281));
+
+			SetConnectionFields();
 		}
 	}
 

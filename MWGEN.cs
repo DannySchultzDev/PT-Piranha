@@ -355,7 +355,7 @@ namespace PT_Piranha
 
 					gameRow.Cells[1].Value = gameNode.Name;
 					gameRow.Cells[2].Value = gameNode.Player;
-					gameRow.Cells[3].Value = gameNode.Count;
+					gameRow.Cells[3].Value = gameNode.Count.ToString();
 
 					if (gameNode.ItemGroup != null)
 					{

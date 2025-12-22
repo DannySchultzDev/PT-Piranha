@@ -61,8 +61,6 @@ If you need to make an edit to your Multiworld Tracker, you can reopen the Multi
 Bug fixes/minor changes, lots of them.<br/>
 Current issues include:<br/>
 Joining a room causes clients to complain about a bad request.<br/>
-Remember last set IP and Port.<br/>
-Give an option to hide IP and Port.<br/>
 Add field for password.<br/>
 Add auto refresh if disconnected or at least a button to reload.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
