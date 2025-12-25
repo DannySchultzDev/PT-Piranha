@@ -19,7 +19,7 @@ namespace PT_Piranha
 
 		private static bool needToConnectAllWorlds = false;
 
-		private static bool needToRedraw = false;
+		private static int needToRedraw = 0;
 
 		private static bool needToSetStatus = false;
 		private static string currStatus = string.Empty;
@@ -44,9 +44,14 @@ namespace PT_Piranha
 					needToConnectAllWorlds = false;
 					DoConnectAllWorlds();
 				}
-				if (needToRedraw)
+				if (needToRedraw == 2)
 				{
-					needToRedraw = false;
+					needToRedraw = 0;
+					DoCompleteRedraw();
+				}
+				else if (needToRedraw == 1)
+				{
+					needToRedraw = 0;
 					DoRedraw();
 				}
 				if (needToSetStatus)
@@ -103,16 +108,33 @@ namespace PT_Piranha
 			if (!initialized)
 				Initialize();
 
-			if (needToRedraw)
+			if (needToRedraw >= 1)
 				return;
 
-			needToRedraw = true;
+			needToRedraw = 1;
 			resetEvent.Set();
 		}
 
 		private static void DoRedraw()
 		{
 			Main.instance.UpdatePicture();
+		}
+
+		public static void CompleteRedraw()
+		{
+			if (!initialized)
+				Initialize();
+
+			if (needToRedraw >= 2)
+				return;
+
+			needToRedraw = 2;
+			resetEvent.Set();
+		}
+
+		private static void DoCompleteRedraw()
+		{
+			Main.instance.CompleteUpdatePicture();
 		}
 
 		public static void SetStatus(string status, bool quiet = false)

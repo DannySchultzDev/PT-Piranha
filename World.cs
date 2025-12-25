@@ -23,11 +23,14 @@ namespace PT_Piranha
 
 		public ArchipelagoSession session = null;
 
-		public World(string game, string player, List<ItemGroup> items)
+		public World(string game, string player, List<ItemGroup> itemGroups)
 		{
 			this.game = game;
 			this.player = player;
-			this.itemGroups = items;
+			this.itemGroups = itemGroups;
+
+			foreach (ItemGroup itemGroup in this.itemGroups)
+				itemGroup.world = this;
 		}
 
 		public void Connect()
@@ -159,6 +162,8 @@ namespace PT_Piranha
 
 	public class ItemGroup
 	{
+		public World world = null;
+
 		public string name;
 		
 		//What can the item go by?
@@ -195,11 +200,29 @@ namespace PT_Piranha
 			else
 				return gradient.GetColor(count/(float)maxCount);
 		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			if (world != null)
+			{
+				sb.AppendLine(world.player);
+				sb.AppendLine(world.game);
+			}
+
+			sb.AppendLine(name);
+			sb.AppendLine(count + " / " + maxCount);
+
+			return sb.ToString();
+		}
 	}
 
 	public class Gradient
 	{
 		public List<(float weight, Color color)> colors;
+
+		private (float weight, Color color) lastColor = (-1, Color.Black);
 
 		public Gradient(List<(float weight, Color color)> colors)
 		{
@@ -215,6 +238,9 @@ namespace PT_Piranha
 
 		public Color GetColor(float weight)
 		{
+			if (weight == lastColor.weight)
+				return lastColor.color;
+
 			(float weight, Color color)? startColor = null;
 			(float weight, Color color)? endColor = null;
 
@@ -284,18 +310,23 @@ namespace PT_Piranha
 			int q = Convert.ToInt32(lerpVal * (1 - f * lerpSat));
 			int t = Convert.ToInt32(lerpVal * (1 - (1 - f) * lerpSat));
 
+			Color returnColor;
+
 			if (hi == 0)
-				return Color.FromArgb(255, v, t, p);
+				returnColor = Color.FromArgb(255, v, t, p);
 			else if (hi == 1)
-				return Color.FromArgb(255, q, v, p);
+				returnColor = Color.FromArgb(255, q, v, p);
 			else if (hi == 2)
-				return Color.FromArgb(255, p, v, t);
+				returnColor = Color.FromArgb(255, p, v, t);
 			else if (hi == 3)
-				return Color.FromArgb(255, p, q, v);
+				returnColor = Color.FromArgb(255, p, q, v);
 			else if (hi == 4)
-				return Color.FromArgb(255, t, p, v);
+				returnColor = Color.FromArgb(255, t, p, v);
 			else
-				return Color.FromArgb(255, v, p, q);
+				returnColor = Color.FromArgb(255, v, p, q);
+
+			lastColor = (weight, returnColor);
+			return returnColor;
 		}
 
 		public Color GetFirstColor()

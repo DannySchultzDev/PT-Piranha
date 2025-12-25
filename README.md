@@ -65,10 +65,10 @@ Add field for password.<br/>
 Add auto refresh if disconnected or at least a button to reload.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
-Allow users to see what percentage completion each section is with tool tips.<br/>
 Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
 Adding more display options for the Multiworld Tracker viewer (Seperated by game, jumbled, count to size correlated, voronoi).<br/>
 Image support for clear color.<br/>
+Image support for overlays.<br/>
 Additional Gradient Styles (clamp to next).
 <h2>Naming</h2>
 PT stands for Pizza Tower since that was the first use case. Specifically named after the Piraneapple enemy.

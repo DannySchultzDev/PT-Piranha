@@ -1,23 +1,10 @@
-﻿using Archipelago.MultiClient.Net;
-using Archipelago.MultiClient.Net.Helpers;
-using Archipelago.MultiClient.Net.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Color = System.Drawing.Color;
 
 namespace PT_Piranha
@@ -26,9 +13,13 @@ namespace PT_Piranha
 	{
 		public List<World> worlds = new List<World>();
 		public static Main instance { get; private set; }
+
 		private PictureArrangmentMode pictureArrangmentMode = PictureArrangmentMode.FLUID;
 		private Color fillerColor = Color.White;
-		private Bitmap bmp = new Bitmap(1, 1);
+		private ItemGroup[,] pbn = new ItemGroup[1,1];
+
+		ToolTip mainPictureBoxToolTip = new ToolTip();
+		Point mainPictureBoxLastMousePoint = new Point(0, 0);
 
 		private static readonly string logFolderpath = Path.Combine(
 			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -158,8 +149,27 @@ namespace PT_Piranha
 			}
 			finally
 			{
-				Worker.Redraw();
+				Worker.CompleteRedraw();
 			}
+		}
+
+		public void CompleteUpdatePicture()
+		{
+			pbn = new ItemGroup[mainPictureBox.Width, mainPictureBox.Height];
+
+			if (worlds.Count > 0)
+			{
+				switch (pictureArrangmentMode)
+				{
+					case PictureArrangmentMode.FLUID:
+						UpdatePictureFluid(pbn);
+						break;
+					default:
+						throw new NotImplementedException("Picture arrangment mode not implemented.");
+				}
+			}
+
+			UpdatePicture();
 		}
 
 		public void UpdatePicture()
@@ -170,23 +180,43 @@ namespace PT_Piranha
 				return;
 			}
 
-			if (mainPictureBox.Image == null ||
-				mainPictureBox.Width != mainPictureBox.Image.Width ||
-				mainPictureBox.Height != mainPictureBox.Image.Height)
-				mainPictureBox.Image = new Bitmap(mainPictureBox.Width, mainPictureBox.Height);
+			Bitmap bmp = new Bitmap(pbn.GetLength(0), pbn.GetLength(1));
+			DrawBackground(bmp);
+			DrawSegments(bmp, pbn);
+			DrawOverlays(bmp, pbn);
 
 			UpdateProgressBar();
 
-			switch (pictureArrangmentMode)
-			{
-				case PictureArrangmentMode.FLUID:
-					UpdatePictureFluid();
-					break;
-				default:
-					throw new NotImplementedException("Picture arrangment mode not implemented.");
-			}
+			Image imgOld = mainPictureBox.Image;
+			mainPictureBox.Image = bmp;
+			if (imgOld != null)
+				imgOld.Dispose();
 
 			mainPictureBox.Refresh();
+		}
+
+		private void DrawBackground(Bitmap bmp)
+		{
+			using (Graphics g = Graphics.FromImage(bmp))
+				g.Clear(fillerColor);
+		}
+
+		private void DrawSegments(Bitmap bmp, ItemGroup[,] pbn)
+		{
+			for (int i = 0; i < pbn.GetLength(0); ++i)
+			{
+				for (int j = 0; j < pbn.GetLength(1); ++j)
+				{
+					if (pbn[i,j] == null)
+						continue;
+					bmp.SetPixel(i, j, pbn[i, j].GetColor());
+				}
+			}
+		}
+
+		private void DrawOverlays(Bitmap bmp, ItemGroup[,] pbn)
+		{
+			
 		}
 
 		private void UpdateProgressBar()
@@ -218,23 +248,21 @@ namespace PT_Piranha
 				currItems.ToString() + " items collected out of " + totalItems.ToString();
 		}
 
-		private void UpdatePictureFluid()
+		private void UpdatePictureFluid(ItemGroup[,] pbn)
 		{
 			List<ItemGroup> itemGroups = new List<ItemGroup>();
 			foreach (World world in worlds)
 				itemGroups.AddRange(world.itemGroups);
 
-			Bitmap bmp = (Bitmap)mainPictureBox.Image;
-
 			int columnCount = 1;
-			float itemGroupSize = bmp.Width / (float)columnCount;
-			int rowCount = (int)(bmp.Height / itemGroupSize);
+			float itemGroupSize = pbn.GetLength(0) / (float)columnCount;
+			int rowCount = (int)(pbn.GetLength(1) / itemGroupSize);
 
 			while (rowCount * columnCount < itemGroups.Count)
 			{
 				++columnCount;
-				itemGroupSize = bmp.Width / (float)columnCount;
-				rowCount = (int)(bmp.Height / itemGroupSize);
+				itemGroupSize = pbn.GetLength(0) / (float)columnCount;
+				rowCount = (int)(pbn.GetLength(1) / itemGroupSize);
 			}
 
 			while ((rowCount * columnCount) - columnCount >= itemGroups.Count)
@@ -243,19 +271,17 @@ namespace PT_Piranha
 			if (rowCount == 1)
 				columnCount = itemGroups.Count;
 
-			for (int y = 0; y < bmp.Height; ++y)
+			for (int y = 0; y < pbn.GetLength(1); ++y)
 			{
-				int rowID = y * rowCount / bmp.Height;
+				int rowID = y * rowCount / pbn.GetLength(1);
 
-				for (int x = 0; x < bmp.Width; ++x)
+				for (int x = 0; x < pbn.GetLength(0); ++x)
 				{
-					int columnID = x * columnCount / bmp.Width;
+					int columnID = x * columnCount / pbn.GetLength(0);
 					int ID = columnID + (rowID * columnCount);
 
 					if (ID < itemGroups.Count)
-						bmp.SetPixel(x, y, itemGroups[ID].GetColor());
-					else
-						bmp.SetPixel(x, y, fillerColor);
+						pbn[x, y] = itemGroups[ID];
 				}
 			}
 		}
@@ -287,7 +313,7 @@ namespace PT_Piranha
 
 		private void Main_ResizeEnd(object sender, EventArgs e)
 		{
-			Worker.Redraw();
+			Worker.CompleteRedraw();
 		}
 
 		private void Main_Load(object sender, EventArgs e)
@@ -305,6 +331,8 @@ namespace PT_Piranha
 			}
 
 			SetConnectionFields();
+
+			Worker.CompleteRedraw();
 		}
 
 		private void ConnectionSettingsButton_Click(object sender, EventArgs e)
@@ -346,7 +374,7 @@ namespace PT_Piranha
 			}
 		}
 
-		private void resetButton_Click(object sender, EventArgs e)
+		private void ResetButton_Click(object sender, EventArgs e)
 		{
 			RegistryHelper.SetValue(RegistryName.IP_CURRENT,
 				RegistryHelper.GetValue(RegistryName.IP_DEFAULT, "localhost"));
@@ -354,6 +382,25 @@ namespace PT_Piranha
 				RegistryHelper.GetValue(RegistryName.PORT_DEFAULT, 38281));
 
 			SetConnectionFields();
+		}
+
+		private void mainPictureBox_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (e.Location.Equals(mainPictureBoxLastMousePoint))
+				return;
+
+			mainPictureBoxLastMousePoint = e.Location;
+
+			if (e.Location.X >= pbn.GetLength(0) ||
+				e.Location.Y >= pbn.GetLength(1) ||
+				pbn[e.Location.X, e.Location.Y] == null)
+			{
+				mainPictureBoxToolTip.Active = false;
+				return;
+			}
+
+			mainPictureBoxToolTip.Active = true;
+			mainPictureBoxToolTip.SetToolTip(mainPictureBox, pbn[e.Location.X, e.Location.Y].ToString());
 		}
 	}
 

@@ -89,7 +89,7 @@
 			this.resetButton.Size = new System.Drawing.Size(34, 29);
 			this.resetButton.Text = "toolStripButton1";
 			this.resetButton.ToolTipText = "Reset to defaults";
-			this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+			this.resetButton.Click += new System.EventHandler(this.ResetButton_Click);
 			// 
 			// portTextBox
 			// 
@@ -236,7 +236,7 @@
 			// mainToolStripContainer.ContentPanel
 			// 
 			this.mainToolStripContainer.ContentPanel.Controls.Add(this.mainPictureBox);
-			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 374);
+			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 378);
 			this.mainToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainToolStripContainer.LeftToolStripPanelVisible = false;
 			this.mainToolStripContainer.Location = new System.Drawing.Point(0, 0);
@@ -255,10 +255,11 @@
 			this.mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
 			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(658, 374);
+			this.mainPictureBox.Size = new System.Drawing.Size(658, 378);
 			this.mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.mainPictureBox.TabIndex = 1;
 			this.mainPictureBox.TabStop = false;
+			this.mainPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mainPictureBox_MouseMove);
 			// 
 			// Main
 			// 
