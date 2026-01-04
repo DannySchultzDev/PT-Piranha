@@ -10,6 +10,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref = "Game" minOccurs = "0" maxOccurs = "unbounded"/>
+				<xs:element ref = "Overlay" minOccurs = "0" maxOccurs = "unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -32,6 +33,7 @@
 			<xs:element ref = "ItemGroupPart" minOccurs = "0" maxOccurs = "unbounded"/>
 			<xs:element ref = "ColorGradient"/>
 			<xs:element ref = "ClearColor"/>
+			<xs:element ref = "OverlayID" minOccurs = "0" maxOccurs = "unbounded"/>
 		</xs:sequence>
 		<xs:attribute name = "Name" type = "xs:string" use = "required"/>
 		<xs:attribute name = "IsLocation" type = "xs:boolean" use = "required"/>
@@ -41,6 +43,7 @@
 	
 	<xs:complexType name = "ItemGroupPartType">
 		<xs:attribute name = "Name" type = "xs:string" use = "required"/>
+		<xs:attribute name = "Value" type = "xs:unsignedInt" use = "optional"/>
 	</xs:complexType>
 	
 	<xs:element name = "ColorGradient" type = "GradientType"/>
@@ -60,5 +63,18 @@
 		<xs:attribute name = "Green" type = "xs:int" use = "required"/>
 		<xs:attribute name = "Blue" type = "xs:int" use = "required"/>
 		<xs:attribute name = "Weight" type = "xs:float" use = "required"/>
-	</xs:complexType>	
+	</xs:complexType>
+
+	<xs:element name = "Overlay" type = "OverlayType"/>
+	
+	<xs:complexType name = "OverlayType">
+		<xs:attribute name = "ID" type = "xs:unsignedInt" use = "required"/>
+		<xs:attribute name = "Data" type = "xs:base64Binary" use = "required"/>
+	</xs:complexType>
+
+	<xs:element name = "OverlayID" type = "OverlayIDType"/>
+	
+	<xs:complexType name = "OverlayIDType">
+		<xs:attribute name = "ID" type = "xs:unsignedInt" use = "required"/>
+	</xs:complexType>
 </xs:schema>

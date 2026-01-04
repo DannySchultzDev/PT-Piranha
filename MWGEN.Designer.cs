@@ -41,13 +41,6 @@
 			this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
 			this.itemGroupsLabel = new System.Windows.Forms.Label();
 			this.itemGroupsDataGridView = new System.Windows.Forms.DataGridView();
-			this.itemGroupIndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.itemGroupNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.gameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.itemGroupLocationColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-			this.itemGroupStartColorColumn = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.itemGroupEndColorColumn = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.itemGroupClearColorColumn = new System.Windows.Forms.DataGridViewButtonColumn();
 			this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
 			this.itemGroupPartsLabel = new System.Windows.Forms.Label();
 			this.itemGroupPartsDataGridView = new System.Windows.Forms.DataGridView();
@@ -55,10 +48,19 @@
 			this.itemGroupPartNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.itemGroupColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.generateButton = new System.Windows.Forms.Button();
+			this.addWorldButton = new System.Windows.Forms.Button();
+			this.imageButtonColumn1 = new PT_Piranha.ImageButtonColumn();
 			this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
+			this.imageButtonColumn2 = new PT_Piranha.ImageButtonColumn();
 			this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
 			this.dataGridViewButtonColumn3 = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.addWorldButton = new System.Windows.Forms.Button();
+			this.itemGroupIndexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.itemGroupNameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.gameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.itemGroupLocationColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+			this.itemGroupGradientColumn = new PT_Piranha.ImageButtonColumn();
+			this.itemGroupClearColorColumn = new System.Windows.Forms.DataGridViewButtonColumn();
+			this.itemGroupOverlayColumn = new PT_Piranha.ImageButtonColumn();
 			this.outerTableLayout.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.outerSplitContainer)).BeginInit();
 			this.outerSplitContainer.Panel1.SuspendLayout();
@@ -237,9 +239,9 @@
             this.itemGroupNameColumn,
             this.gameColumn,
             this.itemGroupLocationColumn,
-            this.itemGroupStartColorColumn,
-            this.itemGroupEndColorColumn,
-            this.itemGroupClearColorColumn});
+            this.itemGroupGradientColumn,
+            this.itemGroupClearColorColumn,
+            this.itemGroupOverlayColumn});
 			this.itemGroupsDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.itemGroupsDataGridView.GridColor = System.Drawing.SystemColors.Control;
 			this.itemGroupsDataGridView.Location = new System.Drawing.Point(3, 33);
@@ -248,55 +250,9 @@
 			this.itemGroupsDataGridView.RowTemplate.Height = 28;
 			this.itemGroupsDataGridView.Size = new System.Drawing.Size(788, 54);
 			this.itemGroupsDataGridView.TabIndex = 1;
-			this.itemGroupsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ClickColorButtonCell);
+			this.itemGroupsDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ClickItemGroupCell);
 			this.itemGroupsDataGridView.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.FormatItemGroupTable);
 			this.itemGroupsDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.PaintItemGroupCell);
-			// 
-			// itemGroupIndexColumn
-			// 
-			this.itemGroupIndexColumn.HeaderText = "ID";
-			this.itemGroupIndexColumn.MinimumWidth = 8;
-			this.itemGroupIndexColumn.Name = "itemGroupIndexColumn";
-			this.itemGroupIndexColumn.ReadOnly = true;
-			// 
-			// itemGroupNameColumn
-			// 
-			this.itemGroupNameColumn.HeaderText = "Item Group Name";
-			this.itemGroupNameColumn.MinimumWidth = 8;
-			this.itemGroupNameColumn.Name = "itemGroupNameColumn";
-			// 
-			// gameColumn
-			// 
-			this.gameColumn.HeaderText = "Game ID";
-			this.gameColumn.MinimumWidth = 8;
-			this.gameColumn.Name = "gameColumn";
-			// 
-			// itemGroupLocationColumn
-			// 
-			this.itemGroupLocationColumn.HeaderText = "Is Location";
-			this.itemGroupLocationColumn.MinimumWidth = 8;
-			this.itemGroupLocationColumn.Name = "itemGroupLocationColumn";
-			// 
-			// itemGroupStartColorColumn
-			// 
-			this.itemGroupStartColorColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.itemGroupStartColorColumn.HeaderText = "Start Color";
-			this.itemGroupStartColorColumn.MinimumWidth = 8;
-			this.itemGroupStartColorColumn.Name = "itemGroupStartColorColumn";
-			// 
-			// itemGroupEndColorColumn
-			// 
-			this.itemGroupEndColorColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.itemGroupEndColorColumn.HeaderText = "End Color";
-			this.itemGroupEndColorColumn.MinimumWidth = 8;
-			this.itemGroupEndColorColumn.Name = "itemGroupEndColorColumn";
-			// 
-			// itemGroupClearColorColumn
-			// 
-			this.itemGroupClearColorColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.itemGroupClearColorColumn.HeaderText = "Clear Color";
-			this.itemGroupClearColorColumn.MinimumWidth = 8;
-			this.itemGroupClearColorColumn.Name = "itemGroupClearColorColumn";
 			// 
 			// tableLayoutPanel3
 			// 
@@ -373,6 +329,25 @@
 			this.generateButton.UseVisualStyleBackColor = true;
 			this.generateButton.Click += new System.EventHandler(this.Generate);
 			// 
+			// addWorldButton
+			// 
+			this.addWorldButton.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.addWorldButton.Location = new System.Drawing.Point(403, 611);
+			this.addWorldButton.Name = "addWorldButton";
+			this.addWorldButton.Size = new System.Drawing.Size(394, 44);
+			this.addWorldButton.TabIndex = 2;
+			this.addWorldButton.Text = "Add Existing Multiworld Tracker";
+			this.addWorldButton.UseVisualStyleBackColor = true;
+			this.addWorldButton.Click += new System.EventHandler(this.AddMultiworldToTracker);
+			// 
+			// imageButtonColumn1
+			// 
+			this.imageButtonColumn1.HeaderText = "Gradient";
+			this.imageButtonColumn1.MinimumWidth = 8;
+			this.imageButtonColumn1.Name = "imageButtonColumn1";
+			this.imageButtonColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.imageButtonColumn1.Width = 103;
+			// 
 			// dataGridViewButtonColumn1
 			// 
 			this.dataGridViewButtonColumn1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -380,6 +355,14 @@
 			this.dataGridViewButtonColumn1.MinimumWidth = 8;
 			this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
 			this.dataGridViewButtonColumn1.Width = 121;
+			// 
+			// imageButtonColumn2
+			// 
+			this.imageButtonColumn2.HeaderText = "Image ";
+			this.imageButtonColumn2.MinimumWidth = 8;
+			this.imageButtonColumn2.Name = "imageButtonColumn2";
+			this.imageButtonColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.imageButtonColumn2.Width = 103;
 			// 
 			// dataGridViewButtonColumn2
 			// 
@@ -397,16 +380,53 @@
 			this.dataGridViewButtonColumn3.Name = "dataGridViewButtonColumn3";
 			this.dataGridViewButtonColumn3.Width = 121;
 			// 
-			// addWorldButton
+			// itemGroupIndexColumn
 			// 
-			this.addWorldButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.addWorldButton.Location = new System.Drawing.Point(403, 611);
-			this.addWorldButton.Name = "addWorldButton";
-			this.addWorldButton.Size = new System.Drawing.Size(394, 44);
-			this.addWorldButton.TabIndex = 2;
-			this.addWorldButton.Text = "Add Existing Multiworld Tracker";
-			this.addWorldButton.UseVisualStyleBackColor = true;
-			this.addWorldButton.Click += new System.EventHandler(this.AddMultiworldToTracker);
+			this.itemGroupIndexColumn.HeaderText = "ID";
+			this.itemGroupIndexColumn.MinimumWidth = 8;
+			this.itemGroupIndexColumn.Name = "itemGroupIndexColumn";
+			this.itemGroupIndexColumn.ReadOnly = true;
+			// 
+			// itemGroupNameColumn
+			// 
+			this.itemGroupNameColumn.HeaderText = "Item Group Name";
+			this.itemGroupNameColumn.MinimumWidth = 8;
+			this.itemGroupNameColumn.Name = "itemGroupNameColumn";
+			// 
+			// gameColumn
+			// 
+			this.gameColumn.HeaderText = "Game ID";
+			this.gameColumn.MinimumWidth = 8;
+			this.gameColumn.Name = "gameColumn";
+			// 
+			// itemGroupLocationColumn
+			// 
+			this.itemGroupLocationColumn.HeaderText = "Is Location";
+			this.itemGroupLocationColumn.MinimumWidth = 8;
+			this.itemGroupLocationColumn.Name = "itemGroupLocationColumn";
+			// 
+			// itemGroupGradientColumn
+			// 
+			this.itemGroupGradientColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.itemGroupGradientColumn.HeaderText = "Gradient";
+			this.itemGroupGradientColumn.MinimumWidth = 8;
+			this.itemGroupGradientColumn.Name = "itemGroupGradientColumn";
+			this.itemGroupGradientColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			// 
+			// itemGroupClearColorColumn
+			// 
+			this.itemGroupClearColorColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.itemGroupClearColorColumn.HeaderText = "Clear Color";
+			this.itemGroupClearColorColumn.MinimumWidth = 8;
+			this.itemGroupClearColorColumn.Name = "itemGroupClearColorColumn";
+			// 
+			// itemGroupOverlayColumn
+			// 
+			this.itemGroupOverlayColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.itemGroupOverlayColumn.HeaderText = "Image ";
+			this.itemGroupOverlayColumn.MinimumWidth = 8;
+			this.itemGroupOverlayColumn.Name = "itemGroupOverlayColumn";
+			this.itemGroupOverlayColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			// 
 			// MWGEN
 			// 
@@ -461,16 +481,18 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn gameNameColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn playerNameColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn worldCountColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupIndexColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupNameColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn gameColumn;
-		private System.Windows.Forms.DataGridViewCheckBoxColumn itemGroupLocationColumn;
-		private System.Windows.Forms.DataGridViewButtonColumn itemGroupStartColorColumn;
-		private System.Windows.Forms.DataGridViewButtonColumn itemGroupEndColorColumn;
-		private System.Windows.Forms.DataGridViewButtonColumn itemGroupClearColorColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupPartIndexColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupPartNameColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupColumn;
 		private System.Windows.Forms.Button addWorldButton;
+		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupIndexColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn itemGroupNameColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn gameColumn;
+		private System.Windows.Forms.DataGridViewCheckBoxColumn itemGroupLocationColumn;
+		private ImageButtonColumn itemGroupGradientColumn;
+		private System.Windows.Forms.DataGridViewButtonColumn itemGroupClearColorColumn;
+		private ImageButtonColumn itemGroupOverlayColumn;
+		private ImageButtonColumn imageButtonColumn1;
+		private ImageButtonColumn imageButtonColumn2;
 	}
 }

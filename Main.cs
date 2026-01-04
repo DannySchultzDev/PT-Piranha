@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 //using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -16,10 +18,22 @@ namespace PT_Piranha
 
 		private PictureArrangmentMode pictureArrangmentMode = PictureArrangmentMode.FLUID;
 		private Color fillerColor = Color.White;
-		private ItemGroup[,] pbn = new ItemGroup[1,1];
+		private ItemGroup[,] pbn = new ItemGroup[1, 1];
+		private OverlayMode overlayMode = OverlayMode.NORMAL;
+		private List<(Rectangle area, ItemGroup itemGroup)> overlays =
+			new List<(Rectangle area, ItemGroup itemGroup)>();
+		private static readonly Font overlayFont = new Font(DefaultFont.FontFamily, 30);
+		private static readonly int overlayHorizontalOffset = 5;
+
+		private static float brightBGThreshold = .7f;
+		private static readonly Brush lightBrush = new SolidBrush(Color.White);
+		private static readonly Brush darkbrush = new SolidBrush(Color.Black);
+
 
 		ToolTip mainPictureBoxToolTip = new ToolTip();
 		Point mainPictureBoxLastMousePoint = new Point(0, 0);
+
+		FormWindowState currentState = FormWindowState.Normal;
 
 		private static readonly string logFolderpath = Path.Combine(
 			Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -90,6 +104,16 @@ namespace PT_Piranha
 					rootNode = serializer.Deserialize(stream) as Root;
 				}
 
+				Dictionary<uint, Image> overlays = new Dictionary<uint, Image>();
+				if (rootNode.Overlay != null)
+				{
+					foreach (OverlayType overlayNode in rootNode.Overlay)
+					{
+						ImageConverter converter = new ImageConverter();
+						overlays.Add(overlayNode.ID, (Image)converter.ConvertFrom(overlayNode.Data));
+					}
+				}
+
 				foreach (GameType gameNode in rootNode.Game)
 				{
 					string format = "D" + (gameNode.Count + 1).ToString().Length.ToString();
@@ -112,15 +136,21 @@ namespace PT_Piranha
 									}
 								}
 
+								Image image = null;
+								if (itemGroupNode.OverlayID != null &&
+									itemGroupNode.OverlayID.Length > 0)
+									image = overlays[itemGroupNode.OverlayID[0].ID];
+
 								ItemGroup itemGroup = new ItemGroup(
-									itemGroupNode.Name, 
+									itemGroupNode.Name,
 									itemGroupParts,
 									itemGroupNode.IsLocation,
 									new Gradient(itemGroupNode.ColorGradient),
 									Color.FromArgb(
 										itemGroupNode.ClearColor.Red,
 										itemGroupNode.ClearColor.Green,
-										itemGroupNode.ClearColor.Blue));
+										itemGroupNode.ClearColor.Blue),
+									image);
 
 								itemGroups.Add(itemGroup);
 							}
@@ -156,6 +186,7 @@ namespace PT_Piranha
 		public void CompleteUpdatePicture()
 		{
 			pbn = new ItemGroup[mainPictureBox.Width, mainPictureBox.Height];
+			overlays.Clear();
 
 			if (worlds.Count > 0)
 			{
@@ -183,7 +214,7 @@ namespace PT_Piranha
 			Bitmap bmp = new Bitmap(pbn.GetLength(0), pbn.GetLength(1));
 			DrawBackground(bmp);
 			DrawSegments(bmp, pbn);
-			DrawOverlays(bmp, pbn);
+			DrawOverlays(bmp, overlays);
 
 			UpdateProgressBar();
 
@@ -207,16 +238,22 @@ namespace PT_Piranha
 			{
 				for (int j = 0; j < pbn.GetLength(1); ++j)
 				{
-					if (pbn[i,j] == null)
+					if (pbn[i, j] == null)
 						continue;
 					bmp.SetPixel(i, j, pbn[i, j].GetColor());
 				}
 			}
 		}
 
-		private void DrawOverlays(Bitmap bmp, ItemGroup[,] pbn)
+		private void DrawOverlays(Bitmap bmp, List<(Rectangle area, ItemGroup itemGroup)> overlays)
 		{
-			
+			using (Graphics graphics = Graphics.FromImage(bmp))
+			{
+				foreach ((Rectangle area, ItemGroup itemGroup) overlay in overlays)
+				{
+					graphics.DrawImage(GetImageFromOverlay(overlay.itemGroup, overlay.area), overlay.area);
+				}
+			}
 		}
 
 		private void UpdateProgressBar()
@@ -244,7 +281,7 @@ namespace PT_Piranha
 			statusPercentageBar.Value = currItems;
 			statusPercentageBar.Minimum = 0;
 
-			statusPercentageBar.ToolTipText = 
+			statusPercentageBar.ToolTipText =
 				currItems.ToString() + " items collected out of " + totalItems.ToString();
 		}
 
@@ -271,6 +308,22 @@ namespace PT_Piranha
 			if (rowCount == 1)
 				columnCount = itemGroups.Count;
 
+			for (int rowID = 0; rowID < rowCount; ++rowID)
+			{
+				for (int columnID = 0; columnID < columnCount; ++columnID)
+				{
+					int ID = columnID + (rowID * columnCount);
+
+					if (ID < itemGroups.Count)
+						overlays.Add((new Rectangle(
+							pbn.GetLength(0) * columnID / columnCount,
+							pbn.GetLength(1) * rowID / rowCount,
+							pbn.GetLength(0) / columnCount,
+							pbn.GetLength(1) / rowCount),
+							itemGroups[ID]));
+				}
+			}
+
 			for (int y = 0; y < pbn.GetLength(1); ++y)
 			{
 				int rowID = y * rowCount / pbn.GetLength(1);
@@ -284,6 +337,75 @@ namespace PT_Piranha
 						pbn[x, y] = itemGroups[ID];
 				}
 			}
+		}
+
+		private Image GetImageFromOverlay(ItemGroup itemGroup, Rectangle targetArea)
+		{
+			Image overlay = null;
+
+			switch (overlayMode)
+			{
+				case OverlayMode.NORMAL:
+					if (itemGroup.overlay != null)
+						overlay = itemGroup.overlay;
+					else
+						overlay = DrawTextToImage(itemGroup.ToString(), itemGroup.GetColor());
+					break;
+				case OverlayMode.ALL_TEXT:
+					overlay = DrawTextToImage(itemGroup.ToString(), itemGroup.GetColor());
+					break;
+				case OverlayMode.ONLY_IMAGE:
+					if (itemGroup.overlay != null)
+						overlay = itemGroup.overlay;
+					else
+						return null;
+					break;
+				case OverlayMode.NONE:
+					return null;
+				default:
+					throw new NotImplementedException("OverlayMode of: " + overlayMode.ToString() + " not implemented.");
+			}
+
+			//Pad image so it has same aspect ratio as target area.
+			Image extendedOverlay;
+			float overlayRatio = overlay.Width / (float)overlay.Height;
+			float areaRatio = targetArea.Width / (float)targetArea.Height;
+			if (overlayRatio == areaRatio)
+				extendedOverlay = overlay;
+			else if (overlayRatio > areaRatio)
+			{
+				extendedOverlay = new Bitmap(overlay.Width, (int)(overlay.Width / areaRatio));
+				
+				using (Graphics graphics = Graphics.FromImage(extendedOverlay))
+					graphics.DrawImage(overlay, new Rectangle(0, (extendedOverlay.Height / 2) - (overlay.Height / 2), extendedOverlay.Width, overlay.Height));
+			}
+			else
+			{
+				extendedOverlay = new Bitmap((int)(overlay.Height * areaRatio), overlay.Height);
+
+				using (Graphics graphics = Graphics.FromImage(extendedOverlay))
+					graphics.DrawImage(overlay, new Rectangle((extendedOverlay.Width / 2) - (overlay.Width / 2), 0, overlay.Width, extendedOverlay.Height));
+			}
+
+			return extendedOverlay;
+		}
+
+		private Image DrawTextToImage(string text, Color colorBG)
+		{
+			text = text.TrimEnd();
+
+			Size s = TextRenderer.MeasureText(text, overlayFont);
+
+			Bitmap bmp = new Bitmap(s.Width + overlayHorizontalOffset, s.Height);
+
+			Brush brush = colorBG.GetBrightness() < brightBGThreshold ? lightBrush : darkbrush;
+
+			using (Graphics graphics = Graphics.FromImage(bmp))
+			{
+				graphics.DrawString(text, overlayFont, brush, new PointF(0, 0));
+			}
+
+			return bmp;
 		}
 
 		public void SetStatus(string status)
@@ -402,6 +524,15 @@ namespace PT_Piranha
 			mainPictureBoxToolTip.Active = true;
 			mainPictureBoxToolTip.SetToolTip(mainPictureBox, pbn[e.Location.X, e.Location.Y].ToString());
 		}
+
+		private void Main_Resize(object sender, EventArgs e)
+		{
+			if (WindowState != currentState)
+			{
+				currentState = WindowState;
+				Worker.CompleteRedraw();
+			}
+		}
 	}
 
 	public enum PictureArrangmentMode
@@ -418,5 +549,25 @@ namespace PT_Piranha
 		/// All item groups are shuffled on the board.
 		/// </summary>
 		JUMBLE
+	}
+
+	public enum OverlayMode
+	{
+		/// <summary>
+		/// If itemgroup has an image use that, otherwise use text.
+		/// </summary>
+		NORMAL,
+		/// <summary>
+		/// Show all itemgroups as text.
+		/// </summary>
+		ALL_TEXT,
+		/// <summary>
+		/// If itemgroup has an image use that, otherwise don't show overlay.
+		/// </summary>
+		ONLY_IMAGE,
+		/// <summary>
+		/// Don't show overlay.
+		/// </summary>
+		NONE
 	}
 }

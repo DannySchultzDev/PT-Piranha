@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +18,8 @@ namespace PT_Piranha
 {
 	public partial class MWGEN : Form
 	{
+		private Dictionary<string, Image> overlays = new Dictionary<string, Image>();
+
 		public MWGEN()
 		{
 			InitializeComponent();
@@ -72,30 +76,70 @@ namespace PT_Piranha
 
 			DataGridViewCell cell = itemGroupsDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 
-			if ((!cell.OwningColumn.Equals(itemGroupStartColorColumn)) &&
-				(!cell.OwningColumn.Equals(itemGroupEndColorColumn)) &&
-				(!cell.OwningColumn.Equals(itemGroupClearColorColumn)))
-				return;
-
-			Color? cellColor = cell.Tag as Color?;
-			if (cellColor == null)
+			if (cell.OwningColumn.Equals(itemGroupGradientColumn))
 			{
-				if (cell.OwningColumn.Equals(itemGroupStartColorColumn))
-					cell.Tag = Color.Red;
-				else if (cell.OwningColumn.Equals(itemGroupEndColorColumn))
-					cell.Tag = Color.Green;
-				else if (cell.OwningColumn.Equals(itemGroupClearColorColumn))
-					cell.Tag = Color.Yellow;
-				else
-					throw new NotImplementedException("Default cell color not set up.");
+				ImageButton imageButton = cell as ImageButton;
+				if (imageButton == null)
+					return;
 
-				cellColor = cell.Tag as Color?;
+				Gradient gradient = imageButton.Tag as Gradient;
+				if (gradient == null)
+				{
+					if (!Gradient.TryParse(
+						RegistryHelper.GetValue(RegistryName.GRADIENT_DEFAULT,
+						"0|255|0|0\r\n1|0|255|0"),
+						out gradient))
+						return;
+				}
+
+				imageButton.Tag = gradient;
+
+				Bitmap bitmap = new Bitmap(256, 16);
+				for (int x = 0; x < bitmap.Width; ++x)
+				{
+					Color color = gradient.GetColor(x/(float)bitmap.Width);
+					for (int y = 0; y < bitmap.Height; ++y)
+					{
+						bitmap.SetPixel(x, y, color);
+					}
+				}
+
+				imageButton.image = bitmap;
 			}
+			else if (cell.OwningColumn.Equals(itemGroupClearColorColumn))
+			{
+				Color? cellColor = cell.Tag as Color?;
+				if (cellColor == null)
+				{
+					string colorString = RegistryHelper.GetValue(RegistryName.CLEAR_COLOR_DEFAULT, "255|255|0");
+					string[] colorStringParts = colorString.Split('|');
 
-			e.CellStyle.BackColor = (Color)cellColor;
+					if (byte.TryParse(colorStringParts[0], out byte r) &&
+						byte.TryParse(colorStringParts[1], out byte g) &&
+						byte.TryParse(colorStringParts[2], out byte b))
+						cell.Tag = Color.FromArgb(r, g, b);
+					else
+						return;
+
+					cellColor = cell.Tag as Color?;
+				}
+
+				e.CellStyle.BackColor = (Color)cellColor;
+			}
+			else if (cell.OwningColumn.Equals(itemGroupOverlayColumn))
+			{
+				ImageButton imageButton = cell as ImageButton;
+				if (imageButton == null)
+					return;
+
+				if (!(imageButton.Tag is string))
+					return;
+				Image image = overlays[(string)imageButton.Tag];
+				imageButton.image = image;
+			}
 		}
 
-		private void ClickColorButtonCell(object sender, DataGridViewCellEventArgs e)
+		private void ClickItemGroupCell(object sender, DataGridViewCellEventArgs e)
 		{
 			if (e.ColumnIndex < 0 || e.RowIndex < 0)
 				return;
@@ -106,12 +150,37 @@ namespace PT_Piranha
 
 			DataGridViewButtonCell buttonCell = cell as DataGridViewButtonCell;
 
-			ColorDialog colorDialog = new ColorDialog();
-			colorDialog.Color = (Color)buttonCell.Tag;
-			if (colorDialog.ShowDialog() != DialogResult.OK)
-				return;
+			if (cell.OwningColumn.Equals(itemGroupGradientColumn))
+			{ 
+				GradientDialog gradientDialog = new GradientDialog();
+				gradientDialog.Gradient = (Gradient)cell.Tag;
+				if (gradientDialog.ShowDialog() != DialogResult.OK)
+					return;
 
-			buttonCell.Tag = colorDialog.Color;
+				buttonCell.Tag = gradientDialog.Gradient;
+			}
+			else if (cell.OwningColumn.Equals(itemGroupClearColorColumn))
+			{
+				ColorDialog colorDialog = new ColorDialog();
+				colorDialog.Color = (Color)buttonCell.Tag;
+				if (colorDialog.ShowDialog() != DialogResult.OK)
+					return;
+
+				buttonCell.Tag = colorDialog.Color;
+			}
+			else if (cell.OwningColumn.Equals(itemGroupOverlayColumn))
+			{
+				OpenFileDialog openFileDialog = new OpenFileDialog();
+				openFileDialog.Filter = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp|Gif (*.gif)|*.gif";
+				if (openFileDialog.ShowDialog() != DialogResult.OK)
+					return;
+
+				if (!overlays.ContainsKey(openFileDialog.FileName))
+					overlays.Add(openFileDialog.FileName, Image.FromFile(openFileDialog.FileName));
+
+				buttonCell.Tag = openFileDialog.FileName;
+			}
+
 			itemGroupsDataGridView.Refresh();
 		}
 
@@ -126,9 +195,9 @@ namespace PT_Piranha
 					Dictionary<uint, (
 					string itemGroupName,
 					bool isLocation, 
-					Color startColor, 
-					Color endColor, 
-					Color clearColor, 
+					Gradient gradient, 
+					Color clearColor,
+					List<uint> overlays,
 					List<string> itemGroupParts)> itemGroups)> dict = 
 					new Dictionary<uint, (
 					string gameName,
@@ -137,13 +206,26 @@ namespace PT_Piranha
 					Dictionary<uint, (
 					string itemGroupName,
 					bool isLocation, 
-					Color startColor, 
-					Color endColor, 
+					Gradient gradient, 
 					Color clearColor, 
+					List<uint> overlays,
 					List<string> itemGroupParts)> itemGroups)>();
 
 				Dictionary<uint, List<string>> itemGroupDict = 
 					new Dictionary<uint, List<string>>();
+
+				Dictionary<string, uint> overlayIDs = new Dictionary<string, uint>();
+				Dictionary<uint, Image> overlaysByIDs = new Dictionary<uint, Image>();
+				{
+					uint ID = 0;
+					foreach (string key in overlays.Keys)
+					{
+						overlayIDs.Add(key, ID);
+						overlaysByIDs.Add(ID, overlays[key]);
+						++ID;
+					}
+				}
+
 
 				foreach (DataGridViewRow row in gamesDataGridView.Rows)
 				{
@@ -177,9 +259,9 @@ namespace PT_Piranha
 						new Dictionary<uint, (
 						string itemGroupName,
 						bool isLocation, 
-						Color startColor, 
-						Color endColor, 
+						Gradient gradients, 
 						Color clearColor, 
+						List<uint> overlays,
 						List<string> itemGroupParts)>()));
 				}
 
@@ -191,9 +273,15 @@ namespace PT_Piranha
 					string gameIndexStr = row.Cells[2].FormattedValue as string;
 					bool validGameIndex = uint.TryParse(gameIndexStr, out uint gameIndex);
 					bool isLocation = (bool)row.Cells[3].FormattedValue;
-					Color startColor = (Color)row.Cells[4].Tag;
-					Color endColor = (Color)row.Cells[5].Tag;
-					Color clearColor = (Color)row.Cells[6].Tag;
+					Gradient gradient = row.Cells[4].Tag as Gradient;
+					Color clearColor = Color.White;
+					if (row.Cells[5].Tag is Color)
+						clearColor = (Color)row.Cells[5].Tag;
+					List<uint> itemGroupOverlays = new List<uint>();
+					if (row.Cells[6].Tag is string &&
+						overlays.ContainsKey((string)row.Cells[6].Tag) &&
+						overlayIDs.TryGetValue((string)row.Cells[6].Tag, out uint ID))
+						itemGroupOverlays.Add(ID);
 
 					if (string.IsNullOrEmpty(itemGroupName))
 						continue;
@@ -205,10 +293,18 @@ namespace PT_Piranha
 						throw new Exception("Item Group " + index + " is missing a game ID.");
 					else if (!validGameIndex || !dict.ContainsKey(gameIndex))
 						throw new Exception("Item Group " + index + " has an invalid game ID: " + gameIndexStr);
+					else if (gradient == null)
+						throw new Exception("Item Group " + index + " has an invalid Gradient.");
 
 					List<string> itemGroupParts = new List<string>();
 
-					dict[gameIndex].itemGroups.Add(index, (itemGroupName, isLocation, startColor, endColor, clearColor, itemGroupParts));
+					dict[gameIndex].itemGroups.Add(index, (
+						itemGroupName, 
+						isLocation, 
+						gradient, 
+						clearColor, 
+						itemGroupOverlays, 
+						itemGroupParts));
 					itemGroupDict.Add(index, itemGroupParts);
 				}
 
@@ -255,18 +351,15 @@ namespace PT_Piranha
 
 						GradientType gradientNode = new GradientType();
 						List<ColorType> colorNodes = new List<ColorType>();
-						ColorType startColorNode = new ColorType();
-						startColorNode.Red = itemGroup.startColor.R;
-						startColorNode.Green = itemGroup.startColor.G;
-						startColorNode.Blue = itemGroup.startColor.B;
-						startColorNode.Weight = 0.0f;
-						colorNodes.Add(startColorNode);
-						ColorType endColorNode = new ColorType();
-						endColorNode.Red = itemGroup.endColor.R;
-						endColorNode.Green = itemGroup.endColor.G;
-						endColorNode.Blue = itemGroup.endColor.B;
-						endColorNode.Weight = 1.0f;
-						colorNodes.Add(endColorNode);
+						foreach ((float weight, Color color) color in itemGroup.gradient.colors)
+						{
+							ColorType colorNode = new ColorType();
+							colorNode.Weight = color.weight;
+							colorNode.Red = color.color.R;
+							colorNode.Green = color.color.G;
+							colorNode.Blue = color.color.B;
+							colorNodes.Add(colorNode);
+						}
 						gradientNode.Color = colorNodes.ToArray();
 						gradientNode.GradientStyle = 1;
 						itemGroupNode.ColorGradient = gradientNode;
@@ -278,12 +371,25 @@ namespace PT_Piranha
 						clearColorNode.Weight = 1.0f;
 						itemGroupNode.ClearColor = clearColorNode;
 
+						List<OverlayIDType> overlayIDNodes = new List<OverlayIDType>();
+						foreach (uint overlayID in itemGroup.overlays)
+						{
+							OverlayIDType overlayIDNode = new OverlayIDType();
+							
+							overlayIDNode.ID = overlayID;
+
+							overlayIDNodes.Add(overlayIDNode);
+						}
+						itemGroupNode.OverlayID = overlayIDNodes.ToArray();
+
 						List<ItemGroupPartType> itemGroupPartNodes = new List<ItemGroupPartType>();
 						foreach (string itemGroupPart in itemGroup.itemGroupParts)
 						{
 							ItemGroupPartType itemGroupPartNode = new ItemGroupPartType();
 
 							itemGroupPartNode.Name = itemGroupPart;
+							itemGroupPartNode.Value = 1;
+							itemGroupPartNode.ValueSpecified = true;
 
 							itemGroupPartNodes.Add(itemGroupPartNode);
 						}
@@ -296,6 +402,23 @@ namespace PT_Piranha
 					gameNodes.Add(gameNode);
 				}
 				root.Game = gameNodes.ToArray();
+
+				List<OverlayType> overlayNodes = new List<OverlayType>();
+				foreach (uint ID in overlaysByIDs.Keys)
+				{
+					OverlayType overlayNode = new OverlayType();
+
+					overlayNode.ID = ID;
+					
+					using (MemoryStream ms = new MemoryStream())
+					{
+						overlaysByIDs[ID].Save(ms, overlaysByIDs[ID].RawFormat);
+						overlayNode.Data = ms.ToArray();
+					}
+
+					overlayNodes.Add(overlayNode);
+				}
+				root.Overlay = overlayNodes.ToArray();
 
 				SaveFileDialog saveFileDialog = new SaveFileDialog();
 				saveFileDialog.Filter = "piranha files (*.piranha)|*.piranha|xml files (*.xml)|*.xml|All files (*.*)|*.*";
@@ -346,6 +469,19 @@ namespace PT_Piranha
 					rootNode = serializer.Deserialize(stream) as Root;
 				}
 
+				Dictionary<uint, string> overlayGuids = new Dictionary<uint, string>();
+				if (rootNode.Overlay != null)
+				{
+					foreach (OverlayType overlayNode in rootNode.Overlay)
+					{
+						string guid = Guid.NewGuid().ToString();
+						overlayGuids.Add(overlayNode.ID, guid);
+
+						ImageConverter converter = new ImageConverter();
+						overlays.Add(guid, (Image)converter.ConvertFrom(overlayNode.Data));
+					}
+				}
+
 				foreach (GameType gameNode in rootNode.Game)
 				{
 					gamesDataGridView.Rows.Add();
@@ -370,15 +506,16 @@ namespace PT_Piranha
 							itemGroupRow.Cells[2].Value = gameIndex.ToString();
 							itemGroupRow.Cells[3].Value = itemGroupNode.IsLocation;
 
-							Gradient gradient = new Gradient(itemGroupNode.ColorGradient);
+							itemGroupRow.Cells[4].Tag = new Gradient(itemGroupNode.ColorGradient);
 
-							itemGroupRow.Cells[4].Tag = gradient.GetFirstColor();
-							itemGroupRow.Cells[5].Tag = gradient.GetLastColor();
-
-							itemGroupRow.Cells[6].Tag = Color.FromArgb(
+							itemGroupRow.Cells[5].Tag = Color.FromArgb(
 								itemGroupNode.ClearColor.Red,
 								itemGroupNode.ClearColor.Green,
 								itemGroupNode.ClearColor.Blue);
+
+							if (itemGroupNode.OverlayID != null &&
+								itemGroupNode.OverlayID.Length > 0)
+								itemGroupRow.Cells[6].Tag = overlayGuids[itemGroupNode.OverlayID[0].ID];
 
 							if (itemGroupNode.ItemGroupPart != null)
 							{

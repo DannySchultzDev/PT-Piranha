@@ -26,6 +26,8 @@ public partial class Root {
     
     private GameType[] gameField;
     
+    private OverlayType[] overlayField;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlElementAttribute("Game")]
     public GameType[] Game {
@@ -34,6 +36,17 @@ public partial class Root {
         }
         set {
             this.gameField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute("Overlay")]
+    public OverlayType[] Overlay {
+        get {
+            return this.overlayField;
+        }
+        set {
+            this.overlayField = value;
         }
     }
 }
@@ -115,6 +128,8 @@ public partial class ItemGroupType {
     
     private ColorType clearColorField;
     
+    private OverlayIDType[] overlayIDField;
+    
     private string nameField;
     
     private bool isLocationField;
@@ -147,6 +162,17 @@ public partial class ItemGroupType {
         }
         set {
             this.clearColorField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlElementAttribute("OverlayID")]
+    public OverlayIDType[] OverlayID {
+        get {
+            return this.overlayIDField;
+        }
+        set {
+            this.overlayIDField = value;
         }
     }
     
@@ -184,6 +210,10 @@ public partial class ItemGroupPartType {
     
     private string nameField;
     
+    private uint valueField;
+    
+    private bool valueFieldSpecified;
+    
     /// <remarks/>
     [System.Xml.Serialization.XmlAttributeAttribute()]
     public string Name {
@@ -192,6 +222,28 @@ public partial class ItemGroupPartType {
         }
         set {
             this.nameField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public uint Value {
+        get {
+            return this.valueField;
+        }
+        set {
+            this.valueField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlIgnoreAttribute()]
+    public bool ValueSpecified {
+        get {
+            return this.valueFieldSpecified;
+        }
+        set {
+            this.valueFieldSpecified = value;
         }
     }
 }
@@ -290,6 +342,65 @@ public partial class ColorType {
         }
         set {
             this.weightField = value;
+        }
+    }
+}
+
+/// <remarks/>
+[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
+[System.SerializableAttribute()]
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.ComponentModel.DesignerCategoryAttribute("code")]
+[System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/MWSchema.xsd")]
+[System.Xml.Serialization.XmlRootAttribute("OverlayID", Namespace="http://tempuri.org/MWSchema.xsd", IsNullable=false)]
+public partial class OverlayIDType {
+    
+    private uint idField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public uint ID {
+        get {
+            return this.idField;
+        }
+        set {
+            this.idField = value;
+        }
+    }
+}
+
+/// <remarks/>
+[System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.8.3928.0")]
+[System.SerializableAttribute()]
+[System.Diagnostics.DebuggerStepThroughAttribute()]
+[System.ComponentModel.DesignerCategoryAttribute("code")]
+[System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/MWSchema.xsd")]
+[System.Xml.Serialization.XmlRootAttribute("Overlay", Namespace="http://tempuri.org/MWSchema.xsd", IsNullable=false)]
+public partial class OverlayType {
+    
+    private uint idField;
+    
+    private byte[] dataField;
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute()]
+    public uint ID {
+        get {
+            return this.idField;
+        }
+        set {
+            this.idField = value;
+        }
+    }
+    
+    /// <remarks/>
+    [System.Xml.Serialization.XmlAttributeAttribute(DataType="base64Binary")]
+    public byte[] Data {
+        get {
+            return this.dataField;
+        }
+        set {
+            this.dataField = value;
         }
     }
 }

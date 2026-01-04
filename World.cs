@@ -4,6 +4,8 @@ using Archipelago.MultiClient.Net.Models;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -45,6 +47,9 @@ namespace PT_Piranha
 				if (session == null)
 					throw new Exception("Session created was null.");
 
+				session.Items.ItemReceived += ReceivedItem;
+				session.Locations.CheckedLocationsUpdated += LocationChecked;
+
 				LoginResult loginResult = session.TryConnectAndLogin(
 					game,
 					player,
@@ -57,9 +62,6 @@ namespace PT_Piranha
 
 				if (loginResult == null)
 					throw new Exception("Login result was null.");
-
-				session.Items.ItemReceived += ReceivedItem;
-				session.Locations.CheckedLocationsUpdated += LocationChecked;
 
 				LocationChecked(null);
 
@@ -176,6 +178,8 @@ namespace PT_Piranha
 		public Gradient gradient;
 		public Color clearColor;
 
+		public Image overlay;
+
 		public int count = 0;
 
 		//The number of instances in the game.
@@ -184,13 +188,14 @@ namespace PT_Piranha
 		private static long indexer = 0;
 		public readonly long index = indexer++;
 
-		public ItemGroup(string name, List<string> targets, bool isLocations, Gradient gradient, Color clearColor)
+		public ItemGroup(string name, List<string> targets, bool isLocations, Gradient gradient, Color clearColor, Image overlay)
 		{
 			this.name = name;
 			this.targets = targets;
 			this.isLocations = isLocations;
 			this.gradient = gradient;
 			this.clearColor = clearColor;
+			this.overlay = overlay;
 		}
 
 		public Color GetColor()
@@ -291,6 +296,12 @@ namespace PT_Piranha
 			{
 				lerpHue = ((endHue - startHue) * lerpAmt) + startHue;
 			}
+			else if (endHue - startHue > 180)
+			{
+				lerpHue = ((endHue - (startHue + 360)) * lerpAmt) + startHue + 360;
+				if (lerpHue > 360)
+					lerpHue -= 360;
+			}
 			else
 			{
 				lerpHue = ((endHue + 360 - startHue) * lerpAmt) + startHue;
@@ -361,6 +372,56 @@ namespace PT_Piranha
 			}
 
 			return heighestColor;
+		}
+
+		public override string ToString()
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach ((float weight, Color color) color in colors)
+			{
+				sb.AppendLine(
+					color.weight.ToString(CultureInfo.InvariantCulture) + "|" +
+					color.color.R.ToString() + "|" + 
+					color.color.G.ToString() + "|" + 
+					color.color.B.ToString());
+			}
+			return sb.ToString().TrimEnd();
+		}
+
+		public static bool TryParse(string str, out Gradient gradient)
+		{
+			if (string.IsNullOrWhiteSpace(str))
+			{
+				gradient = null;
+				return false;
+			}
+
+			List<(float weight, Color color)> colors = new List<(float weight, Color color)>();
+
+			foreach (string line in str.Split('\n'))
+			{
+				string[] parts = line.TrimEnd().Split('|');
+				
+				if (parts.Length != 4)
+				{
+					gradient = null;
+					return false;
+				}
+
+				if (float.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out float weight) &&
+					byte.TryParse(parts[1], out byte r) &&
+					byte.TryParse(parts[2], out byte g) &&
+					byte.TryParse(parts[3], out byte b))
+					colors.Add((weight, Color.FromArgb(r, g, b)));
+				else
+				{
+					gradient = null;
+					return false;
+				}
+			}
+
+			gradient = new Gradient(colors);
+			return true;
 		}
 	}
 }

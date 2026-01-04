@@ -272,6 +272,7 @@
 			this.Text = "PT Piranha";
 			this.Load += new System.EventHandler(this.Main_Load);
 			this.ResizeEnd += new System.EventHandler(this.Main_ResizeEnd);
+			this.Resize += new System.EventHandler(this.Main_Resize);
 			this.mainToolStrip.ResumeLayout(false);
 			this.mainToolStrip.PerformLayout();
 			this.mainStatusStrip.ResumeLayout(false);

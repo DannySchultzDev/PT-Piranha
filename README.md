@@ -63,12 +63,19 @@ Current issues include:<br/>
 Joining a room causes clients to complain about a bad request.<br/>
 Add field for password.<br/>
 Add auto refresh if disconnected or at least a button to reload.<br/>
+Images are stretched in editor.<br/>
+Images are anti-aliased causing pixel art to look blurry.<br/>
+Images should be auto cropped for transparency, and then given a buffer.<br/>
+Support for Webp images.<br/>
+Add the ability to move rows in the Multiworld Tracker Generator.<br/>
+Deleting or moving a row in the Multiworld Tracker Generator should adjust other tables.<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
-Adding Gradient support to Multiworld Tracker editor.(Technically extra keys can be added in the XML manually)<br/>
+Major changes:<br/>
 Adding more display options for the Multiworld Tracker viewer (Seperated by game, jumbled, count to size correlated, voronoi).<br/>
 Image support for clear color.<br/>
-Image support for overlays.<br/>
-Additional Gradient Styles (clamp to next).
+Additional Gradient Styles (clamp to next).<br/>
+Add Hot Generator (Generate a tracker during a game, using the games internal messages to build up the tracker).
+Refactoring for code readability.
 <h2>Naming</h2>
 PT stands for Pizza Tower since that was the first use case. Specifically named after the Piraneapple enemy.
