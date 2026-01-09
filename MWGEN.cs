@@ -214,6 +214,18 @@ namespace PT_Piranha
 				Dictionary<uint, List<string>> itemGroupDict = 
 					new Dictionary<uint, List<string>>();
 
+				Dictionary<string, Image> cleanedOverlays = new Dictionary<string, Image>();
+				foreach (DataGridViewRow row in itemGroupsDataGridView.Rows)
+				{
+					if (row.Cells[6].Tag is string &&
+						overlays.TryGetValue((string)row.Cells[6].Tag, out Image image) &&
+						!cleanedOverlays.ContainsKey((string)row.Cells[6].Tag))
+					{
+						cleanedOverlays.Add((string)row.Cells[6].Tag, image);
+					}
+				}
+				overlays = cleanedOverlays;
+
 				Dictionary<string, uint> overlayIDs = new Dictionary<string, uint>();
 				Dictionary<uint, Image> overlaysByIDs = new Dictionary<uint, Image>();
 				{

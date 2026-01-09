@@ -64,7 +64,6 @@ Joining a room causes clients to complain about a bad request.<br/>
 Add field for password.<br/>
 Add auto refresh if disconnected or at least a button to reload.<br/>
 Images are stretched in editor.<br/>
-Images are anti-aliased causing pixel art to look blurry.<br/>
 Images should be auto cropped for transparency, and then given a buffer.<br/>
 Support for Webp images.<br/>
 Add the ability to move rows in the Multiworld Tracker Generator.<br/>

@@ -29,6 +29,7 @@ namespace PT_Piranha
 		private static readonly Brush lightBrush = new SolidBrush(Color.White);
 		private static readonly Brush darkbrush = new SolidBrush(Color.Black);
 
+		public static ProgressBarMode progressBarMode { get; private set; } = ProgressBarMode.LOCATIONS;
 
 		ToolTip mainPictureBoxToolTip = new ToolTip();
 		Point mainPictureBoxLastMousePoint = new Point(0, 0);
@@ -249,6 +250,13 @@ namespace PT_Piranha
 		{
 			using (Graphics graphics = Graphics.FromImage(bmp))
 			{
+				//Turn off anti aliasing for pixel art.
+				if (RegistryHelper.GetValue(RegistryName.OVERLAY_INTERPOLATION, 1) == 0)
+				{
+					graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+					graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+				}
+
 				foreach ((Rectangle area, ItemGroup itemGroup) overlay in overlays)
 				{
 					graphics.DrawImage(GetImageFromOverlay(overlay.itemGroup, overlay.area), overlay.area);
@@ -259,16 +267,31 @@ namespace PT_Piranha
 		private void UpdateProgressBar()
 		{
 			List<ItemGroup> itemGroups = new List<ItemGroup>();
-			foreach (World world in worlds)
-				itemGroups.AddRange(world.itemGroups);
 
 			int currItems = 0;
 			int totalItems = 0;
 
-			foreach (ItemGroup itemGroup in itemGroups)
+			switch (progressBarMode)
 			{
-				currItems += itemGroup.count;
-				totalItems += itemGroup.maxCount;
+				case ProgressBarMode.ITEM_GROUPDS:
+					foreach (World world in worlds)
+						itemGroups.AddRange(world.itemGroups);
+
+					foreach (ItemGroup itemGroup in itemGroups)
+					{
+						currItems += itemGroup.count;
+						totalItems += itemGroup.maxCount;
+					}
+
+					break;
+				case ProgressBarMode.LOCATIONS:
+					foreach (World world in worlds)
+					{
+						currItems += (int)world.locationsChecked;
+						totalItems += (int)world.locationsTotal;
+					}
+
+					break;
 			}
 
 			if (currItems > totalItems)
@@ -281,8 +304,17 @@ namespace PT_Piranha
 			statusPercentageBar.Value = currItems;
 			statusPercentageBar.Minimum = 0;
 
-			statusPercentageBar.ToolTipText =
-				currItems.ToString() + " items collected out of " + totalItems.ToString();
+			switch (progressBarMode)
+			{
+				case ProgressBarMode.ITEM_GROUPDS:
+					statusPercentageBar.ToolTipText =
+						currItems.ToString() + " items collected out of " + totalItems.ToString();
+					break;
+				case ProgressBarMode.LOCATIONS:
+					statusPercentageBar.ToolTipText =
+						currItems.ToString() + " locations checked out of " + totalItems.ToString();
+					break;
+			}
 		}
 
 		private void UpdatePictureFluid(ItemGroup[,] pbn)
@@ -549,6 +581,18 @@ namespace PT_Piranha
 		/// All item groups are shuffled on the board.
 		/// </summary>
 		JUMBLE
+	}
+
+	public enum ProgressBarMode
+	{
+		/// <summary>
+		/// Base progress bar percentage on the number of locations checked across all worlds.
+		/// </summary>
+		LOCATIONS,
+		/// <summary>
+		/// Base progress bar percentage on the sum of percentages of each item group of the multiworld tracker.
+		/// </summary>
+		ITEM_GROUPDS
 	}
 
 	public enum OverlayMode

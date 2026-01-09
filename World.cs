@@ -25,6 +25,9 @@ namespace PT_Piranha
 
 		public ArchipelagoSession session = null;
 
+		public uint locationsTotal = 0;
+		public uint locationsChecked = 0;
+
 		public World(string game, string player, List<ItemGroup> itemGroups)
 		{
 			this.game = game;
@@ -116,6 +119,8 @@ namespace PT_Piranha
 
 		private void LocationChecked(System.Collections.ObjectModel.ReadOnlyCollection<long> newCheckedLocations)
 		{
+			locationsChecked = (uint)session.Locations.AllLocationsChecked.Count;
+
 			bool needUpdate = false;
 			foreach (ItemGroup itemGroup in itemGroups)
 			{
@@ -131,6 +136,8 @@ namespace PT_Piranha
 
 		public void SetUpMaxLocations()
 		{
+			locationsTotal = (uint)session.Locations.AllLocations.Count;
+
 			foreach (ItemGroup itemGroup in itemGroups)
 				if (itemGroup.isLocations)
 					itemGroup.maxCount = session.Locations.AllLocations.Count;
