@@ -1,17 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.Serialization;
 
 namespace PT_Piranha
@@ -28,45 +19,132 @@ namespace PT_Piranha
 			topLeftCell = itemGroupPartsDataGridView.TopLeftHeaderCell;
 		}
 
-		private void FormatIndexColumn(object sender, DataGridViewCellFormattingEventArgs e)
+		private void FormatAllIndexColumns(object sender, DataGridViewCellFormattingEventArgs e, DataGridView dataGridView, List<(DataGridViewColumn column, DataGridViewColumnFormatType type)> parentColumns)
 		{
-			if (e.ColumnIndex != 0 || e.RowIndex < 0)
-				return;
-
-			e.Value = (e.RowIndex + 1).ToString();
-		}
-
-		private void FormatAllIndexColumns(object sender, DataGridViewCellFormattingEventArgs e, DataGridViewColumn parentColumn)
-		{
-			FormatIndexColumn(sender, e);
-			
 			if (e.ColumnIndex < 0 ||
-				parentColumn.DataGridView.Columns[e.ColumnIndex] != parentColumn || 
+				//!parentColumns.Contains(dataGridView.Columns[e.ColumnIndex]) ||
 				e.RowIndex < 0)
 				return;
-			
-			DataGridViewCell cell = parentColumn.DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+			(DataGridViewColumn column, DataGridViewColumnFormatType type)? parentColumn = null;
+
+			foreach ((DataGridViewColumn column, DataGridViewColumnFormatType type) column in parentColumns)
+			{
+				if (column.column.Equals(dataGridView.Columns[e.ColumnIndex]))
+				{
+					parentColumn = column;
+					break;
+				}
+			}
+
+			if (parentColumn == null)
+				return;
+
+			DataGridViewCell cell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 			if (cell.Value != null)
 				return;
-			
-			DataGridViewCell templateCell = parentColumn.DataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+			switch (parentColumn.Value.type)
+			{
+				case DataGridViewColumnFormatType.INDEXING:
+					{
+						e.Value = (e.RowIndex + 1).ToString();
+					}
+					break;
+				case DataGridViewColumnFormatType.LINK:
+					{
+						if (TryGetLastRealValue(dataGridView, e, out object? value) &&
+							value != null)
+							e.Value = value;
+						else
+						{
+							if (dataGridView == itemGroupsDataGridView)
+							{
+								e.Value = "1";
+								foreach (DataGridViewRow row in gamesDataGridView.Rows)
+								{
+									if (row.Cells[gameNameColumn.Name].Value != null)
+										e.Value = (row.Cells[gameIndexColumn.Name].FormattedValue ?? "1").ToString();
+								}
+										
+							}
+							else if (dataGridView == itemGroupPartsDataGridView)
+							{
+
+								e.Value = "1";
+								foreach (DataGridViewRow row in itemGroupsDataGridView.Rows)
+								{
+									if (row.Cells[itemGroupNameColumn.Name].Value != null)
+										e.Value = (row.Cells[itemGroupIndexColumn.Name].FormattedValue ?? "1").ToString();
+								}
+							}
+							else
+							{
+								throw new NotImplementedException("DataGrid " + dataGridView.Name + " does not have it's LINK column implemented.");
+							}
+						}
+					}
+					break;
+				case DataGridViewColumnFormatType.DEFAULT_COPY:
+					{
+						if (TryGetLastRealValue(dataGridView, e, out object? value) &&
+							value != null)
+							e.Value = value;
+						else
+							goto case DataGridViewColumnFormatType.DEFAULT;
+					}
+					break;
+				case DataGridViewColumnFormatType.DEFAULT:
+					{
+						if (parentColumn.Value.column.Equals(worldCountColumn))
+							e.Value = RegistryHelper.GetValue(RegistryName.WORLD_COUNT_DEFAULT, 1).ToString();
+						else if (parentColumn.Value.column.Equals(ItemGroupPartValueColumn))
+							e.Value = RegistryHelper.GetValue(RegistryName.ITEM_GROUP_PART_VALUE_DEFAULT, 1).ToString();
+						else
+							throw new NotImplementedException("DataGrid " + dataGridView.Name + " does not have it's DEFAULT column implemented.");
+					}
+					break;
+				default:
+					throw new NotImplementedException("DataGridViewColumnFormatType of " + parentColumn.Value.ToString() + " not implemented.");
+			}
+
+		}
+
+		private bool TryGetLastRealValue(DataGridView dataGridView, DataGridViewCellFormattingEventArgs e, out object? value)
+		{
+			value = null;
+
+			DataGridViewCell templateCell = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
 			while (templateCell.Value == null && templateCell.RowIndex > 0)
-				templateCell = parentColumn.DataGridView.Rows[templateCell.RowIndex - 1].Cells[e.ColumnIndex];
-			
+				templateCell = dataGridView.Rows[templateCell.RowIndex - 1].Cells[e.ColumnIndex];
+
 			if (templateCell.Value == null)
-				return;
-			
-			e.Value = templateCell.Value;
+				return false;
+
+			value = templateCell.Value;
+			return true;
+		}
+
+		private void FormatGameTable(object sender, DataGridViewCellFormattingEventArgs e)
+		{
+			FormatAllIndexColumns(sender, e, gamesDataGridView, [
+				(gameIndexColumn, DataGridViewColumnFormatType.INDEXING),
+				(worldCountColumn, DataGridViewColumnFormatType.DEFAULT)]);
 		}
 
 		private void FormatItemGroupTable(object sender, DataGridViewCellFormattingEventArgs e)
 		{
-			FormatAllIndexColumns(sender, e, gameColumn);
+			FormatAllIndexColumns(sender, e, itemGroupsDataGridView, [
+				(itemGroupIndexColumn, DataGridViewColumnFormatType.INDEXING),
+				(gameColumn, DataGridViewColumnFormatType.LINK)]);
 		}
 
 		private void FormatItemGroupPartTable(object sender, DataGridViewCellFormattingEventArgs e)
 		{
-			FormatAllIndexColumns(sender, e, itemGroupColumn);
+			FormatAllIndexColumns(sender, e, itemGroupPartsDataGridView, [
+				(itemGroupPartIndexColumn, DataGridViewColumnFormatType.INDEXING),
+				(itemGroupColumn, DataGridViewColumnFormatType.LINK),
+				(ItemGroupPartValueColumn, DataGridViewColumnFormatType.DEFAULT)]);
 		}
 
 		private void PaintItemGroupCell(object sender, DataGridViewCellPaintingEventArgs e)
@@ -97,7 +175,7 @@ namespace PT_Piranha
 				Bitmap bitmap = new Bitmap(256, 16);
 				for (int x = 0; x < bitmap.Width; ++x)
 				{
-					Color color = gradient.GetColor(x/(float)bitmap.Width);
+					Color color = gradient.GetColor(x / (float)bitmap.Width);
 					for (int y = 0; y < bitmap.Height; ++y)
 					{
 						bitmap.SetPixel(x, y, color);
@@ -136,6 +214,7 @@ namespace PT_Piranha
 					return;
 				Image image = overlays[(string)imageButton.Tag];
 				imageButton.image = image;
+				imageButton.imageStretchMode = ImageButtonImageStretchMode.PAD;
 			}
 		}
 
@@ -151,7 +230,7 @@ namespace PT_Piranha
 			DataGridViewButtonCell buttonCell = cell as DataGridViewButtonCell;
 
 			if (cell.OwningColumn.Equals(itemGroupGradientColumn))
-			{ 
+			{
 				GradientDialog gradientDialog = new GradientDialog();
 				gradientDialog.Gradient = (Gradient)cell.Tag;
 				if (gradientDialog.ShowDialog() != DialogResult.OK)
@@ -170,15 +249,16 @@ namespace PT_Piranha
 			}
 			else if (cell.OwningColumn.Equals(itemGroupOverlayColumn))
 			{
-				OpenFileDialog openFileDialog = new OpenFileDialog();
-				openFileDialog.Filter = "Image Files (*.png;*.jpg;*.jpeg;*.bmp)|*.png;*.jpg;*.jpeg;*.bmp|PNG (*.png)|*.png|JPEG (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap (*.bmp)|*.bmp|Gif (*.gif)|*.gif";
-				if (openFileDialog.ShowDialog() != DialogResult.OK)
+				if (!ImageGetter.TryGetImage(out Image? image, out string fileName) ||
+					image == null)
 					return;
 
-				if (!overlays.ContainsKey(openFileDialog.FileName))
-					overlays.Add(openFileDialog.FileName, Image.FromFile(openFileDialog.FileName));
+				if (!overlays.ContainsKey(fileName))
+					overlays.Add(fileName, image);
+				else
+					overlays[fileName] = image;
 
-				buttonCell.Tag = openFileDialog.FileName;
+				buttonCell.Tag = fileName;
 			}
 
 			itemGroupsDataGridView.Refresh();
@@ -190,29 +270,29 @@ namespace PT_Piranha
 			{
 				Dictionary<uint, (
 					string gameName,
-					string playerName, 
-					uint worldCount, 
+					string playerName,
+					uint worldCount,
 					Dictionary<uint, (
 					string itemGroupName,
-					bool isLocation, 
-					Gradient gradient, 
+					bool isLocation,
+					Gradient gradient,
 					Color clearColor,
 					List<uint> overlays,
-					List<string> itemGroupParts)> itemGroups)> dict = 
+					List<(string name, uint value)> itemGroupParts)> itemGroups)> dict =
 					new Dictionary<uint, (
 					string gameName,
-					string playerName, 
-					uint worldCount, 
+					string playerName,
+					uint worldCount,
 					Dictionary<uint, (
 					string itemGroupName,
-					bool isLocation, 
-					Gradient gradient, 
-					Color clearColor, 
+					bool isLocation,
+					Gradient gradient,
+					Color clearColor,
 					List<uint> overlays,
-					List<string> itemGroupParts)> itemGroups)>();
+					List<(string name, uint value)> itemGroupParts)> itemGroups)>();
 
-				Dictionary<uint, List<string>> itemGroupDict = 
-					new Dictionary<uint, List<string>>();
+				Dictionary<uint, List<(string name, uint value)>> itemGroupDict =
+					new Dictionary<uint, List<(string name, uint value)>>();
 
 				Dictionary<string, Image> cleanedOverlays = new Dictionary<string, Image>();
 				foreach (DataGridViewRow row in itemGroupsDataGridView.Rows)
@@ -241,22 +321,19 @@ namespace PT_Piranha
 
 				foreach (DataGridViewRow row in gamesDataGridView.Rows)
 				{
-					string indexStr = row.Cells[0].FormattedValue as string;
+					string indexStr = (row.Cells[0].Value ?? row.Cells[0].FormattedValue) as string;
 					bool validIndex = uint.TryParse(indexStr, out uint index);
 					string gameName = row.Cells[1].Value as string;
 					string playerName = row.Cells[2].Value as string;
-					string worldCountStr = row.Cells[3].Value as string;
+					string worldCountStr = (row.Cells[3].Value ?? row.Cells[3].FormattedValue) as string;
 					bool validWorldCount = uint.TryParse(worldCountStr, out uint worldCount);
-					if (string.IsNullOrEmpty(gameName) &&
-						string.IsNullOrEmpty(playerName) &&
-						string.IsNullOrEmpty(worldCountStr))
+					
+					if (string.IsNullOrEmpty(gameName))
 						continue;
 					else if (string.IsNullOrEmpty(indexStr))
 						throw new Exception("Games table has a row with no ID.");
 					else if (!validIndex)
 						throw new Exception("Games table has an invalid ID: " + indexStr);
-					else if (string.IsNullOrEmpty(gameName))
-						throw new Exception("Game " + index + " is missing a game name.");
 					else if (string.IsNullOrEmpty(playerName))
 						throw new Exception("Game " + index + " is missing a player name.");
 					else if (string.IsNullOrEmpty(worldCountStr))
@@ -266,25 +343,25 @@ namespace PT_Piranha
 
 					dict.Add(index, (
 						gameName,
-						playerName, 
-						worldCount, 
+						playerName,
+						worldCount,
 						new Dictionary<uint, (
 						string itemGroupName,
-						bool isLocation, 
-						Gradient gradients, 
-						Color clearColor, 
+						bool isLocation,
+						Gradient gradients,
+						Color clearColor,
 						List<uint> overlays,
-						List<string> itemGroupParts)>()));
+						List<(string name, uint value)> itemGroupParts)>()));
 				}
 
 				foreach (DataGridViewRow row in itemGroupsDataGridView.Rows)
 				{
-					string indexStr = row.Cells[0].FormattedValue as string;
+					string indexStr = (row.Cells[0].Value ?? row.Cells[0].FormattedValue) as string;
 					bool validIndex = uint.TryParse(indexStr, out uint index);
 					string itemGroupName = row.Cells[1].Value as string;
-					string gameIndexStr = row.Cells[2].FormattedValue as string;
+					string gameIndexStr = (row.Cells[2].Value ?? row.Cells[2].FormattedValue) as string;
 					bool validGameIndex = uint.TryParse(gameIndexStr, out uint gameIndex);
-					bool isLocation = (bool)row.Cells[3].FormattedValue;
+					bool isLocation = (bool)(row.Cells[3].Value ?? row.Cells[3].FormattedValue);
 					Gradient gradient = row.Cells[4].Tag as Gradient;
 					Color clearColor = Color.White;
 					if (row.Cells[5].Tag is Color)
@@ -308,25 +385,27 @@ namespace PT_Piranha
 					else if (gradient == null)
 						throw new Exception("Item Group " + index + " has an invalid Gradient.");
 
-					List<string> itemGroupParts = new List<string>();
+					List<(string name, uint value)> itemGroupParts = new List<(string name, uint value)>();
 
 					dict[gameIndex].itemGroups.Add(index, (
-						itemGroupName, 
-						isLocation, 
-						gradient, 
-						clearColor, 
-						itemGroupOverlays, 
+						itemGroupName,
+						isLocation,
+						gradient,
+						clearColor,
+						itemGroupOverlays,
 						itemGroupParts));
 					itemGroupDict.Add(index, itemGroupParts);
 				}
 
 				foreach (DataGridViewRow row in itemGroupPartsDataGridView.Rows)
 				{
-					string indexStr = row.Cells[0].FormattedValue as string;
+					string indexStr = (row.Cells[0].Value ?? row.Cells[0].FormattedValue) as string;
 					bool validIndex = uint.TryParse(indexStr, out uint index);
 					string itemGroupPartName = row.Cells[1].Value as string;
-					string itemGroupIndexStr = row.Cells[2].FormattedValue as string;
+					string itemGroupIndexStr = (row.Cells[2].Value ?? row.Cells[2].FormattedValue) as string;
 					bool validItemGroupIndex = uint.TryParse(itemGroupIndexStr, out uint itemGroupIndex);
+					string valueStr = (row.Cells[3].Value ?? row.Cells[3].FormattedValue) as string;
+					bool validValue = uint.TryParse(valueStr, out uint value);
 
 					if (string.IsNullOrEmpty(itemGroupPartName))
 						continue;
@@ -338,12 +417,16 @@ namespace PT_Piranha
 						throw new Exception("Item Group Part " + index + " is missing an item group ID.");
 					else if (!validItemGroupIndex || !itemGroupDict.ContainsKey(itemGroupIndex))
 						throw new Exception("Item Group Part " + index + " has an invalid item group ID: " + itemGroupIndexStr);
+					else if (string.IsNullOrEmpty(valueStr))
+						throw new Exception("Item Group Part " + index + " is missing a value.");
+					else if (!validValue)
+						throw new Exception("Item Group Part " + index + " has an invalid value.");
 
-					itemGroupDict[itemGroupIndex].Add(itemGroupPartName);
+					itemGroupDict[itemGroupIndex].Add((itemGroupPartName, value));
 				}
 
 				Root root = new Root();
-				
+
 				List<GameType> gameNodes = new List<GameType>();
 				foreach (var game in dict.Values)
 				{
@@ -387,7 +470,7 @@ namespace PT_Piranha
 						foreach (uint overlayID in itemGroup.overlays)
 						{
 							OverlayIDType overlayIDNode = new OverlayIDType();
-							
+
 							overlayIDNode.ID = overlayID;
 
 							overlayIDNodes.Add(overlayIDNode);
@@ -395,12 +478,12 @@ namespace PT_Piranha
 						itemGroupNode.OverlayID = overlayIDNodes.ToArray();
 
 						List<ItemGroupPartType> itemGroupPartNodes = new List<ItemGroupPartType>();
-						foreach (string itemGroupPart in itemGroup.itemGroupParts)
+						foreach (var itemGroupPart in itemGroup.itemGroupParts)
 						{
 							ItemGroupPartType itemGroupPartNode = new ItemGroupPartType();
 
-							itemGroupPartNode.Name = itemGroupPart;
-							itemGroupPartNode.Value = 1;
+							itemGroupPartNode.Name = itemGroupPart.name;
+							itemGroupPartNode.Value = itemGroupPart.value;
 							itemGroupPartNode.ValueSpecified = true;
 
 							itemGroupPartNodes.Add(itemGroupPartNode);
@@ -421,7 +504,7 @@ namespace PT_Piranha
 					OverlayType overlayNode = new OverlayType();
 
 					overlayNode.ID = ID;
-					
+
 					using (MemoryStream ms = new MemoryStream())
 					{
 						overlaysByIDs[ID].Save(ms, overlaysByIDs[ID].RawFormat);
@@ -538,6 +621,10 @@ namespace PT_Piranha
 
 									itemGroupPartRow.Cells[1].Value = itemGroupPartNode.Name;
 									itemGroupPartRow.Cells[2].Value = itemGroupIndex.ToString();
+									if (itemGroupPartNode.ValueSpecified)
+										itemGroupPartRow.Cells[3].Value = itemGroupPartNode.Value.ToString();
+									else
+										itemGroupPartRow.Cells[3].Value = "1";
 								}
 							}
 						}
@@ -551,5 +638,65 @@ namespace PT_Piranha
 				MessageBox.Show("Could not add Multiworld Tracker: " + ex.Message);
 			}
 		}
+
+		private void MWGEN_Load(object sender, EventArgs e)
+		{
+			outerSplitContainer.SplitterDistance = outerSplitContainer.Height / 3;
+			innerSplitContainer.SplitterDistance = innerSplitContainer.Height / 2;
+		}
+
+		private void CellChanged(object sender, DataGridViewCellEventArgs e)
+		{
+			PrepareLinks();
+
+			gamesDataGridView.Refresh();
+			itemGroupsDataGridView.Refresh();
+			itemGroupPartsDataGridView.Refresh();
+		}
+
+		/// <summary>
+		/// If someone has entered data into the first  row and used the default formatted value, set the value to the formatted value.<br/>
+		/// Essentialy sever the link.
+		/// </summary>
+		private void PrepareLinks()
+		{
+			if (string.IsNullOrEmpty(itemGroupsDataGridView.Rows[0].Cells[gameColumn.Name].Value as string) &&
+				!string.IsNullOrEmpty(itemGroupsDataGridView.Rows[0].Cells[itemGroupNameColumn.Name].Value as string))
+			{
+				itemGroupsDataGridView.Rows[0].Cells[gameColumn.Name].Value =
+					itemGroupsDataGridView.Rows[0].Cells[gameColumn.Name].FormattedValue as string;
+			}
+
+			if (string.IsNullOrEmpty(itemGroupPartsDataGridView.Rows[0].Cells[itemGroupColumn.Name].Value as string) &&
+				!string.IsNullOrEmpty(itemGroupPartsDataGridView.Rows[0].Cells[itemGroupPartNameColumn.Name].Value as string))
+			{
+				itemGroupPartsDataGridView.Rows[0].Cells[itemGroupColumn.Name].Value =
+					itemGroupPartsDataGridView.Rows[0].Cells[itemGroupColumn.Name].FormattedValue as string;
+			}
+		}
+	}
+
+	public enum DataGridViewColumnFormatType
+	{
+		/// <summary>
+		/// Value should be the current row index.
+		/// </summary>
+		INDEXING,
+
+		/// <summary>
+		/// Value is a link to upper level table. 
+		/// Copy value above, but if none present, set to upper table's newest entry.
+		/// </summary>
+		LINK,
+
+		/// <summary>
+		/// Copy value above, but if none present, set to default.
+		/// </summary>
+		DEFAULT_COPY,
+
+		/// <summary>
+		/// Set to default value.
+		/// </summary>
+		DEFAULT
 	}
 }

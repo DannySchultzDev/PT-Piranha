@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Security.Cryptography;
-using System.Windows.Forms;
-using System.Xml.Serialization;
-//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+﻿using System.Xml.Serialization;
 using Color = System.Drawing.Color;
+using System.ComponentModel;
 
 namespace PT_Piranha
 {
 	public partial class Main : Form
 	{
 		public List<World> worlds = new List<World>();
-		public static Main instance { get; private set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public static Main? instance { get; private set; }
 
 		private PictureArrangmentMode pictureArrangmentMode = PictureArrangmentMode.FLUID;
 		private Color fillerColor = Color.White;
@@ -29,6 +23,7 @@ namespace PT_Piranha
 		private static readonly Brush lightBrush = new SolidBrush(Color.White);
 		private static readonly Brush darkbrush = new SolidBrush(Color.Black);
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public static ProgressBarMode progressBarMode { get; private set; } = ProgressBarMode.LOCATIONS;
 
 		ToolTip mainPictureBoxToolTip = new ToolTip();
@@ -127,13 +122,16 @@ namespace PT_Piranha
 						{
 							foreach (ItemGroupType itemGroupNode in gameNode.ItemGroup)
 							{
-								List<string> itemGroupParts = new List<string>();
+								List<(string name, uint value)> itemGroupParts = new List<(string name, uint value)>();
 
 								if (itemGroupNode.ItemGroupPart != null)
 								{
 									foreach (ItemGroupPartType itemGroupPartNode in itemGroupNode.ItemGroupPart)
 									{
-										itemGroupParts.Add(itemGroupPartNode.Name);
+										if (itemGroupPartNode.ValueSpecified)
+											itemGroupParts.Add((itemGroupPartNode.Name, itemGroupPartNode.Value));
+										else
+											itemGroupParts.Add((itemGroupPartNode.Name, 1));
 									}
 								}
 

@@ -13,6 +13,8 @@ namespace PT_Piranha
 	public partial class GradientDialog : Form
 	{
 		private Gradient gradient;
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Gradient Gradient
 		{
 			get

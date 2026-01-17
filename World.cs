@@ -101,11 +101,11 @@ namespace PT_Piranha
 					}
 					else
 					{
-						foreach (string target in itemGroup.targets)
+						foreach (var target in itemGroup.targets)
 						{
-							if (itemInfo.ItemName.Equals(target))
+							if (itemInfo.ItemName.Equals(target.name))
 							{
-								++itemGroup.count;
+								itemGroup.count += (int)target.value;
 								break;
 							}
 						}
@@ -156,12 +156,11 @@ namespace PT_Piranha
 				}
 				else
 				{
-					foreach (string target in itemGroup.targets)
+					foreach (var target in itemGroup.targets)
 					{
-						if (itemInfo.ItemName.Equals(target))
+						if (itemInfo.ItemName.Equals(target.name))
 						{
-							++itemGroup.maxCount;
-							break;
+							itemGroup.maxCount += (int)target.value;
 						}
 					}
 				}
@@ -177,7 +176,7 @@ namespace PT_Piranha
 		
 		//What can the item go by?
 		//For instance the Item "moves" may contain "jump" and "run"
-		public List<string> targets = new List<string>();
+		public List<(string name, uint value)> targets = new List<(string name, uint value)>();
 		
 		//How many locations are left to check can be tracked like an item.
 		public bool isLocations;
@@ -195,7 +194,7 @@ namespace PT_Piranha
 		private static long indexer = 0;
 		public readonly long index = indexer++;
 
-		public ItemGroup(string name, List<string> targets, bool isLocations, Gradient gradient, Color clearColor, Image overlay)
+		public ItemGroup(string name, List<(string name, uint value)> targets, bool isLocations, Gradient gradient, Color clearColor, Image overlay)
 		{
 			this.name = name;
 			this.targets = targets;

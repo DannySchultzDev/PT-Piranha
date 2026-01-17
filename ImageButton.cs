@@ -11,7 +11,8 @@ namespace PT_Piranha
 {
 	public class ImageButton : DataGridViewButtonCell
 	{
-		public Image image = null;
+		public Image? image = null;
+		public ImageButtonImageStretchMode imageStretchMode = ImageButtonImageStretchMode.STRETCH;
 		private static readonly int padding = 2;
 
 		protected override void Paint(Graphics graphics, Rectangle clipBounds, Rectangle cellBounds, int rowIndex, DataGridViewElementStates elementState, object value, object formattedValue, string errorText, DataGridViewCellStyle cellStyle, DataGridViewAdvancedBorderStyle advancedBorderStyle, DataGridViewPaintParts paintParts)
@@ -21,11 +22,49 @@ namespace PT_Piranha
 			if (image == null)
 				return;
 
-			graphics.DrawImage(image, new Rectangle(
-				cellBounds.Left + padding, 
-				cellBounds.Top + padding, 
-				cellBounds.Width - (padding * 2), 
-				cellBounds.Height - (padding * 2)));
+			Rectangle trueCellBounds = new(
+				cellBounds.Left + padding,
+				cellBounds.Top + padding,
+				cellBounds.Width - (padding * 2),
+				cellBounds.Height - (padding * 2));
+
+			switch (imageStretchMode)
+			{
+				case ImageButtonImageStretchMode.STRETCH:
+
+					graphics.DrawImage(image, trueCellBounds);
+
+					break;
+				case ImageButtonImageStretchMode.PAD:
+
+					float imageRatio = image.Width / (float)image.Height;
+					float cellRatio = trueCellBounds.Width / (float)trueCellBounds.Height;
+
+					if (imageRatio == cellRatio)
+						graphics.DrawImage(image, trueCellBounds);
+					else if (imageRatio > cellRatio)
+					{
+						int imageHeight = (int)(trueCellBounds.Width / imageRatio);
+
+						graphics.DrawImage(image, new Rectangle(
+							trueCellBounds.Left,
+							trueCellBounds.Top + ((trueCellBounds.Height - imageHeight) / 2),
+							trueCellBounds.Width,
+							imageHeight));
+					}
+					else
+					{
+						int imageWidth = (int)(trueCellBounds.Height * imageRatio);
+
+						graphics.DrawImage(image, new Rectangle(
+							trueCellBounds.Left + ((trueCellBounds.Width - imageWidth) / 2),
+							trueCellBounds.Top,
+							imageWidth,
+							trueCellBounds.Height));
+					}
+
+					break;
+			}
 		}
 	}
 
@@ -43,19 +82,11 @@ namespace PT_Piranha
 			ImageButtonColumn imageButtonColumn = (ImageButtonColumn)base.Clone();
 			return imageButtonColumn;
 		}
+	}
 
-		public override DataGridViewCell CellTemplate 
-		{ 
-			get => base.CellTemplate;
-			set
-			{
-				if (value != null && !(value is ImageButton))
-				{
-					throw new InvalidCastException("Cannot cast " + value.GetType().Name + " as an ImageButton.");
-				}
-
-				base.CellTemplate = value;
-			}
-		}
+	public enum ImageButtonImageStretchMode
+	{
+		STRETCH,
+		PAD
 	}
 }

@@ -1,146 +1,53 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CCE7D387-6E87-4669-AAFB-7CE1BEE02204}</ProjectGuid>
     <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <RootNamespace>PT_Piranha</RootNamespace>
-    <AssemblyName>PT Piranha</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Archipelago.MultiClient.Net, Version=6.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Archipelago.MultiClient.Net.6.7.0\lib\net45\Archipelago.MultiClient.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Archipelago.MultiClient.Net.6.7.0\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Deployment" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Archipelago.MultiClient.Net" Version="6.7.0" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ConnectionSettings.cs">
+    <Compile Update="ConnectionSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ConnectionSettings.Designer.cs">
-      <DependentUpon>ConnectionSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GradientDialog.cs">
+    <Compile Update="GradientDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GradientDialog.Designer.cs">
-      <DependentUpon>GradientDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ImageButton.cs" />
-    <Compile Include="Main.cs">
+    <Compile Update="Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MWGEN.cs">
+    <Compile Update="MWGEN.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MWGEN.Designer.cs">
-      <DependentUpon>MWGEN.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MWSchema.cs">
-      <DependentUpon>MWSchema.xsd</DependentUpon>
-    </Compile>
-    <Compile Include="RegistryHelper.cs" />
-    <Compile Include="Worker.cs" />
-    <Compile Include="World.cs" />
-    <Compile Include="YAMLGEN.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="YAMLGEN.Designer.cs">
-      <DependentUpon>YAMLGEN.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ConnectionSettings.resx">
-      <DependentUpon>ConnectionSettings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GradientDialog.resx">
-      <DependentUpon>GradientDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MWGEN.resx">
-      <DependentUpon>MWGEN.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="YAMLGEN.resx">
-      <DependentUpon>YAMLGEN.cs</DependentUpon>
+    <Compile Update="YAMLGEN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="MWSchema.xsd">
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="MWSchema.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\OpenfileDialog.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Icon Flat.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Restart.png" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>

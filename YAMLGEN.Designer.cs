@@ -28,179 +28,187 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.inputFileLabel = new System.Windows.Forms.Label();
-			this.inputFileTextBox = new System.Windows.Forms.TextBox();
-			this.inputFileButton = new System.Windows.Forms.Button();
-			this.outputFolderLabel = new System.Windows.Forms.Label();
-			this.outputFolderTextBox = new System.Windows.Forms.TextBox();
-			this.outputFolderButton = new System.Windows.Forms.Button();
-			this.playerLabel = new System.Windows.Forms.Label();
-			this.playerTextBox = new System.Windows.Forms.TextBox();
-			this.countLabel = new System.Windows.Forms.Label();
-			this.countTextBox = new System.Windows.Forms.TextBox();
-			this.generateButton = new System.Windows.Forms.Button();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.SuspendLayout();
+			tableLayoutPanel1 = new TableLayoutPanel();
+			inputFileLabel = new Label();
+			inputFileTextBox = new TextBox();
+			inputFileButton = new Button();
+			outputFolderLabel = new Label();
+			outputFolderTextBox = new TextBox();
+			outputFolderButton = new Button();
+			playerLabel = new Label();
+			playerTextBox = new TextBox();
+			countLabel = new Label();
+			countTextBox = new TextBox();
+			generateButton = new Button();
+			tableLayoutPanel1.SuspendLayout();
+			SuspendLayout();
 			// 
 			// tableLayoutPanel1
 			// 
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-			this.tableLayoutPanel1.Controls.Add(this.inputFileLabel, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.inputFileTextBox, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.inputFileButton, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.outputFolderLabel, 0, 2);
-			this.tableLayoutPanel1.Controls.Add(this.outputFolderTextBox, 0, 3);
-			this.tableLayoutPanel1.Controls.Add(this.outputFolderButton, 1, 3);
-			this.tableLayoutPanel1.Controls.Add(this.playerLabel, 0, 4);
-			this.tableLayoutPanel1.Controls.Add(this.playerTextBox, 0, 5);
-			this.tableLayoutPanel1.Controls.Add(this.countLabel, 0, 6);
-			this.tableLayoutPanel1.Controls.Add(this.countTextBox, 0, 7);
-			this.tableLayoutPanel1.Controls.Add(this.generateButton, 0, 8);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 9;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(514, 347);
-			this.tableLayoutPanel1.TabIndex = 0;
+			tableLayoutPanel1.ColumnCount = 2;
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
+			tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+			tableLayoutPanel1.Controls.Add(inputFileLabel, 0, 0);
+			tableLayoutPanel1.Controls.Add(inputFileTextBox, 0, 1);
+			tableLayoutPanel1.Controls.Add(inputFileButton, 1, 1);
+			tableLayoutPanel1.Controls.Add(outputFolderLabel, 0, 2);
+			tableLayoutPanel1.Controls.Add(outputFolderTextBox, 0, 3);
+			tableLayoutPanel1.Controls.Add(outputFolderButton, 1, 3);
+			tableLayoutPanel1.Controls.Add(playerLabel, 0, 4);
+			tableLayoutPanel1.Controls.Add(playerTextBox, 0, 5);
+			tableLayoutPanel1.Controls.Add(countLabel, 0, 6);
+			tableLayoutPanel1.Controls.Add(countTextBox, 0, 7);
+			tableLayoutPanel1.Controls.Add(generateButton, 0, 8);
+			tableLayoutPanel1.Dock = DockStyle.Fill;
+			tableLayoutPanel1.Location = new Point(0, 0);
+			tableLayoutPanel1.Margin = new Padding(3, 4, 3, 4);
+			tableLayoutPanel1.Name = "tableLayoutPanel1";
+			tableLayoutPanel1.RowCount = 9;
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 11.11111F));
+			tableLayoutPanel1.Size = new Size(571, 434);
+			tableLayoutPanel1.TabIndex = 0;
 			// 
 			// inputFileLabel
 			// 
-			this.inputFileLabel.AutoSize = true;
-			this.inputFileLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.inputFileLabel.Location = new System.Drawing.Point(3, 0);
-			this.inputFileLabel.Name = "inputFileLabel";
-			this.inputFileLabel.Size = new System.Drawing.Size(405, 38);
-			this.inputFileLabel.TabIndex = 0;
-			this.inputFileLabel.Text = "Input File:";
-			this.inputFileLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			inputFileLabel.AutoSize = true;
+			inputFileLabel.Dock = DockStyle.Fill;
+			inputFileLabel.Location = new Point(3, 0);
+			inputFileLabel.Name = "inputFileLabel";
+			inputFileLabel.Size = new Size(450, 48);
+			inputFileLabel.TabIndex = 0;
+			inputFileLabel.Text = "Input File:";
+			inputFileLabel.TextAlign = ContentAlignment.BottomLeft;
 			// 
 			// inputFileTextBox
 			// 
-			this.inputFileTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.inputFileTextBox.Location = new System.Drawing.Point(3, 41);
-			this.inputFileTextBox.Name = "inputFileTextBox";
-			this.inputFileTextBox.Size = new System.Drawing.Size(405, 26);
-			this.inputFileTextBox.TabIndex = 1;
+			inputFileTextBox.Dock = DockStyle.Fill;
+			inputFileTextBox.Location = new Point(3, 52);
+			inputFileTextBox.Margin = new Padding(3, 4, 3, 4);
+			inputFileTextBox.Name = "inputFileTextBox";
+			inputFileTextBox.Size = new Size(450, 31);
+			inputFileTextBox.TabIndex = 1;
 			// 
 			// inputFileButton
 			// 
-			this.inputFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.inputFileButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
-			this.inputFileButton.Location = new System.Drawing.Point(414, 41);
-			this.inputFileButton.Name = "inputFileButton";
-			this.inputFileButton.Size = new System.Drawing.Size(97, 32);
-			this.inputFileButton.TabIndex = 2;
-			this.inputFileButton.UseVisualStyleBackColor = true;
-			this.inputFileButton.Click += new System.EventHandler(this.inputFileButton_Click);
+			inputFileButton.Dock = DockStyle.Fill;
+			inputFileButton.Image = Properties.Resources.OpenfileDialog;
+			inputFileButton.Location = new Point(459, 52);
+			inputFileButton.Margin = new Padding(3, 4, 3, 4);
+			inputFileButton.Name = "inputFileButton";
+			inputFileButton.Size = new Size(109, 40);
+			inputFileButton.TabIndex = 2;
+			inputFileButton.UseVisualStyleBackColor = true;
+			inputFileButton.Click += inputFileButton_Click;
 			// 
 			// outputFolderLabel
 			// 
-			this.outputFolderLabel.AutoSize = true;
-			this.outputFolderLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.outputFolderLabel.Location = new System.Drawing.Point(3, 76);
-			this.outputFolderLabel.Name = "outputFolderLabel";
-			this.outputFolderLabel.Size = new System.Drawing.Size(405, 38);
-			this.outputFolderLabel.TabIndex = 3;
-			this.outputFolderLabel.Text = "Output Folder:";
-			this.outputFolderLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			outputFolderLabel.AutoSize = true;
+			outputFolderLabel.Dock = DockStyle.Fill;
+			outputFolderLabel.Location = new Point(3, 96);
+			outputFolderLabel.Name = "outputFolderLabel";
+			outputFolderLabel.Size = new Size(450, 48);
+			outputFolderLabel.TabIndex = 3;
+			outputFolderLabel.Text = "Output Folder:";
+			outputFolderLabel.TextAlign = ContentAlignment.BottomLeft;
 			// 
 			// outputFolderTextBox
 			// 
-			this.outputFolderTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.outputFolderTextBox.Location = new System.Drawing.Point(3, 117);
-			this.outputFolderTextBox.Name = "outputFolderTextBox";
-			this.outputFolderTextBox.Size = new System.Drawing.Size(405, 26);
-			this.outputFolderTextBox.TabIndex = 4;
+			outputFolderTextBox.Dock = DockStyle.Fill;
+			outputFolderTextBox.Location = new Point(3, 148);
+			outputFolderTextBox.Margin = new Padding(3, 4, 3, 4);
+			outputFolderTextBox.Name = "outputFolderTextBox";
+			outputFolderTextBox.Size = new Size(450, 31);
+			outputFolderTextBox.TabIndex = 4;
 			// 
 			// outputFolderButton
 			// 
-			this.outputFolderButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.outputFolderButton.Image = global::PT_Piranha.Properties.Resources.OpenfileDialog;
-			this.outputFolderButton.Location = new System.Drawing.Point(414, 117);
-			this.outputFolderButton.Name = "outputFolderButton";
-			this.outputFolderButton.Size = new System.Drawing.Size(97, 32);
-			this.outputFolderButton.TabIndex = 5;
-			this.outputFolderButton.UseVisualStyleBackColor = true;
-			this.outputFolderButton.Click += new System.EventHandler(this.outputFolderButton_Click);
+			outputFolderButton.Dock = DockStyle.Fill;
+			outputFolderButton.Image = Properties.Resources.OpenfileDialog;
+			outputFolderButton.Location = new Point(459, 148);
+			outputFolderButton.Margin = new Padding(3, 4, 3, 4);
+			outputFolderButton.Name = "outputFolderButton";
+			outputFolderButton.Size = new Size(109, 40);
+			outputFolderButton.TabIndex = 5;
+			outputFolderButton.UseVisualStyleBackColor = true;
+			outputFolderButton.Click += outputFolderButton_Click;
 			// 
 			// playerLabel
 			// 
-			this.playerLabel.AutoSize = true;
-			this.playerLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.playerLabel.Location = new System.Drawing.Point(3, 152);
-			this.playerLabel.Name = "playerLabel";
-			this.playerLabel.Size = new System.Drawing.Size(405, 38);
-			this.playerLabel.TabIndex = 6;
-			this.playerLabel.Text = "Player Name:";
-			this.playerLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			playerLabel.AutoSize = true;
+			playerLabel.Dock = DockStyle.Fill;
+			playerLabel.Location = new Point(3, 192);
+			playerLabel.Name = "playerLabel";
+			playerLabel.Size = new Size(450, 48);
+			playerLabel.TabIndex = 6;
+			playerLabel.Text = "Player Name:";
+			playerLabel.TextAlign = ContentAlignment.BottomLeft;
 			// 
 			// playerTextBox
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.playerTextBox, 2);
-			this.playerTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.playerTextBox.Location = new System.Drawing.Point(3, 193);
-			this.playerTextBox.Name = "playerTextBox";
-			this.playerTextBox.Size = new System.Drawing.Size(508, 26);
-			this.playerTextBox.TabIndex = 7;
+			tableLayoutPanel1.SetColumnSpan(playerTextBox, 2);
+			playerTextBox.Dock = DockStyle.Fill;
+			playerTextBox.Location = new Point(3, 244);
+			playerTextBox.Margin = new Padding(3, 4, 3, 4);
+			playerTextBox.Name = "playerTextBox";
+			playerTextBox.Size = new Size(565, 31);
+			playerTextBox.TabIndex = 7;
 			// 
 			// countLabel
 			// 
-			this.countLabel.AutoSize = true;
-			this.countLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.countLabel.Location = new System.Drawing.Point(3, 228);
-			this.countLabel.Name = "countLabel";
-			this.countLabel.Size = new System.Drawing.Size(405, 38);
-			this.countLabel.TabIndex = 8;
-			this.countLabel.Text = "World Count:";
-			this.countLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+			countLabel.AutoSize = true;
+			countLabel.Dock = DockStyle.Fill;
+			countLabel.Location = new Point(3, 288);
+			countLabel.Name = "countLabel";
+			countLabel.Size = new Size(450, 48);
+			countLabel.TabIndex = 8;
+			countLabel.Text = "World Count:";
+			countLabel.TextAlign = ContentAlignment.BottomLeft;
 			// 
 			// countTextBox
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.countTextBox, 2);
-			this.countTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.countTextBox.Location = new System.Drawing.Point(3, 269);
-			this.countTextBox.Name = "countTextBox";
-			this.countTextBox.Size = new System.Drawing.Size(508, 26);
-			this.countTextBox.TabIndex = 9;
+			tableLayoutPanel1.SetColumnSpan(countTextBox, 2);
+			countTextBox.Dock = DockStyle.Fill;
+			countTextBox.Location = new Point(3, 340);
+			countTextBox.Margin = new Padding(3, 4, 3, 4);
+			countTextBox.Name = "countTextBox";
+			countTextBox.Size = new Size(565, 31);
+			countTextBox.TabIndex = 9;
 			// 
 			// generateButton
 			// 
-			this.tableLayoutPanel1.SetColumnSpan(this.generateButton, 2);
-			this.generateButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.generateButton.Location = new System.Drawing.Point(3, 307);
-			this.generateButton.Name = "generateButton";
-			this.generateButton.Size = new System.Drawing.Size(508, 37);
-			this.generateButton.TabIndex = 10;
-			this.generateButton.Text = "Generate YAMLs";
-			this.generateButton.UseVisualStyleBackColor = true;
-			this.generateButton.Click += new System.EventHandler(this.generateButton_Click);
+			tableLayoutPanel1.SetColumnSpan(generateButton, 2);
+			generateButton.Dock = DockStyle.Fill;
+			generateButton.Location = new Point(3, 388);
+			generateButton.Margin = new Padding(3, 4, 3, 4);
+			generateButton.Name = "generateButton";
+			generateButton.Size = new Size(565, 42);
+			generateButton.TabIndex = 10;
+			generateButton.Text = "Generate YAMLs";
+			generateButton.UseVisualStyleBackColor = true;
+			generateButton.Click += generateButton_Click;
 			// 
 			// YAMLGEN
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(514, 347);
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.Name = "YAMLGEN";
-			this.Text = "YAML Generator";
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new SizeF(10F, 25F);
+			AutoScaleMode = AutoScaleMode.Font;
+			ClientSize = new Size(571, 434);
+			Controls.Add(tableLayoutPanel1);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Margin = new Padding(3, 4, 3, 4);
+			MaximizeBox = false;
+			Name = "YAMLGEN";
+			Text = "YAML Generator";
+			tableLayoutPanel1.ResumeLayout(false);
+			tableLayoutPanel1.PerformLayout();
+			ResumeLayout(false);
 		}
 
 		#endregion

@@ -29,264 +29,249 @@
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
-			this.mainToolStrip = new System.Windows.Forms.ToolStrip();
-			this.resetButton = new System.Windows.Forms.ToolStripButton();
-			this.portTextBox = new System.Windows.Forms.ToolStripTextBox();
-			this.portLabel = new System.Windows.Forms.ToolStripLabel();
-			this.IPTextBox = new System.Windows.Forms.ToolStripTextBox();
-			this.IPLabel = new System.Windows.Forms.ToolStripLabel();
-			this.fileDropDown = new System.Windows.Forms.ToolStripDropDownButton();
-			this.generateYAMLsButton = new System.Windows.Forms.ToolStripMenuItem();
-			this.fileSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.generateMWButton = new System.Windows.Forms.ToolStripMenuItem();
-			this.editMWButton = new System.Windows.Forms.ToolStripMenuItem();
-			this.loadMWButton = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
-			this.connectionButton = new System.Windows.Forms.ToolStripMenuItem();
-			this.mainStatusStrip = new System.Windows.Forms.StatusStrip();
-			this.statusPercentageBar = new System.Windows.Forms.ToolStripProgressBar();
-			this.statusSpringLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.mainToolStripContainer = new System.Windows.Forms.ToolStripContainer();
-			this.mainPictureBox = new System.Windows.Forms.PictureBox();
-			this.mainToolStrip.SuspendLayout();
-			this.mainStatusStrip.SuspendLayout();
-			this.mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
-			this.mainToolStripContainer.ContentPanel.SuspendLayout();
-			this.mainToolStripContainer.TopToolStripPanel.SuspendLayout();
-			this.mainToolStripContainer.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).BeginInit();
-			this.SuspendLayout();
+			mainToolStrip = new ToolStrip();
+			resetButton = new ToolStripButton();
+			portTextBox = new ToolStripTextBox();
+			portLabel = new ToolStripLabel();
+			IPTextBox = new ToolStripTextBox();
+			IPLabel = new ToolStripLabel();
+			fileDropDown = new ToolStripDropDownButton();
+			generateYAMLsButton = new ToolStripMenuItem();
+			fileSeparator = new ToolStripSeparator();
+			generateMWButton = new ToolStripMenuItem();
+			editMWButton = new ToolStripMenuItem();
+			loadMWButton = new ToolStripMenuItem();
+			settingsDropDown = new ToolStripDropDownButton();
+			connectionButton = new ToolStripMenuItem();
+			mainStatusStrip = new StatusStrip();
+			statusPercentageBar = new ToolStripProgressBar();
+			statusSpringLabel = new ToolStripStatusLabel();
+			statusLabel = new ToolStripStatusLabel();
+			mainToolStripContainer = new ToolStripContainer();
+			mainPictureBox = new PictureBox();
+			mainToolStrip.SuspendLayout();
+			mainStatusStrip.SuspendLayout();
+			mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
+			mainToolStripContainer.ContentPanel.SuspendLayout();
+			mainToolStripContainer.TopToolStripPanel.SuspendLayout();
+			mainToolStripContainer.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)mainPictureBox).BeginInit();
+			SuspendLayout();
 			// 
 			// mainToolStrip
 			// 
-			this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
-			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.mainToolStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetButton,
-            this.portTextBox,
-            this.portLabel,
-            this.IPTextBox,
-            this.IPLabel,
-            this.fileDropDown,
-            this.settingsDropDown});
-			this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
-			this.mainToolStrip.Name = "mainToolStrip";
-			this.mainToolStrip.Size = new System.Drawing.Size(658, 34);
-			this.mainToolStrip.Stretch = true;
-			this.mainToolStrip.TabIndex = 0;
-			this.mainToolStrip.Text = "toolStrip1";
+			mainToolStrip.Dock = DockStyle.None;
+			mainToolStrip.GripStyle = ToolStripGripStyle.Hidden;
+			mainToolStrip.ImageScalingSize = new Size(24, 24);
+			mainToolStrip.Items.AddRange(new ToolStripItem[] { resetButton, portTextBox, portLabel, IPTextBox, IPLabel, fileDropDown, settingsDropDown });
+			mainToolStrip.Location = new Point(0, 0);
+			mainToolStrip.Name = "mainToolStrip";
+			mainToolStrip.Size = new Size(731, 34);
+			mainToolStrip.Stretch = true;
+			mainToolStrip.TabIndex = 0;
+			mainToolStrip.Text = "toolStrip1";
 			// 
 			// resetButton
 			// 
-			this.resetButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.resetButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.resetButton.Image = global::PT_Piranha.Properties.Resources.Restart;
-			this.resetButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.resetButton.Name = "resetButton";
-			this.resetButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.resetButton.Size = new System.Drawing.Size(34, 29);
-			this.resetButton.Text = "toolStripButton1";
-			this.resetButton.ToolTipText = "Reset to defaults";
-			this.resetButton.Click += new System.EventHandler(this.ResetButton_Click);
+			resetButton.Alignment = ToolStripItemAlignment.Right;
+			resetButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			resetButton.Image = Properties.Resources.Restart;
+			resetButton.ImageTransparentColor = Color.Magenta;
+			resetButton.Name = "resetButton";
+			resetButton.Overflow = ToolStripItemOverflow.Never;
+			resetButton.Size = new Size(34, 29);
+			resetButton.Text = "toolStripButton1";
+			resetButton.ToolTipText = "Reset to defaults";
+			resetButton.Click += ResetButton_Click;
 			// 
 			// portTextBox
 			// 
-			this.portTextBox.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.portTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
-			this.portTextBox.Name = "portTextBox";
-			this.portTextBox.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.portTextBox.Size = new System.Drawing.Size(100, 34);
-			this.portTextBox.Validated += new System.EventHandler(this.portTextBox_Validated);
+			portTextBox.Alignment = ToolStripItemAlignment.Right;
+			portTextBox.Name = "portTextBox";
+			portTextBox.Overflow = ToolStripItemOverflow.Never;
+			portTextBox.Size = new Size(100, 34);
+			portTextBox.Validated += portTextBox_Validated;
 			// 
 			// portLabel
 			// 
-			this.portLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.portLabel.Name = "portLabel";
-			this.portLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.portLabel.Size = new System.Drawing.Size(48, 29);
-			this.portLabel.Text = "Port:";
+			portLabel.Alignment = ToolStripItemAlignment.Right;
+			portLabel.Name = "portLabel";
+			portLabel.Overflow = ToolStripItemOverflow.Never;
+			portLabel.Size = new Size(48, 29);
+			portLabel.Text = "Port:";
 			// 
 			// IPTextBox
 			// 
-			this.IPTextBox.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.IPTextBox.Font = new System.Drawing.Font("Segoe UI", 9F);
-			this.IPTextBox.Name = "IPTextBox";
-			this.IPTextBox.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.IPTextBox.Size = new System.Drawing.Size(100, 34);
-			this.IPTextBox.Validated += new System.EventHandler(this.IPChanged);
+			IPTextBox.Alignment = ToolStripItemAlignment.Right;
+			IPTextBox.Name = "IPTextBox";
+			IPTextBox.Overflow = ToolStripItemOverflow.Never;
+			IPTextBox.Size = new Size(100, 34);
+			IPTextBox.Validated += IPChanged;
 			// 
 			// IPLabel
 			// 
-			this.IPLabel.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.IPLabel.Name = "IPLabel";
-			this.IPLabel.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.IPLabel.Size = new System.Drawing.Size(31, 29);
-			this.IPLabel.Text = "IP:";
+			IPLabel.Alignment = ToolStripItemAlignment.Right;
+			IPLabel.Name = "IPLabel";
+			IPLabel.Overflow = ToolStripItemOverflow.Never;
+			IPLabel.Size = new Size(31, 29);
+			IPLabel.Text = "IP:";
 			// 
 			// fileDropDown
 			// 
-			this.fileDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.fileDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateYAMLsButton,
-            this.fileSeparator,
-            this.generateMWButton,
-            this.editMWButton,
-            this.loadMWButton});
-			this.fileDropDown.Image = ((System.Drawing.Image)(resources.GetObject("fileDropDown.Image")));
-			this.fileDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.fileDropDown.Name = "fileDropDown";
-			this.fileDropDown.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.fileDropDown.Size = new System.Drawing.Size(56, 29);
-			this.fileDropDown.Text = "File";
+			fileDropDown.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			fileDropDown.DropDownItems.AddRange(new ToolStripItem[] { generateYAMLsButton, fileSeparator, generateMWButton, editMWButton, loadMWButton });
+			fileDropDown.Image = (Image)resources.GetObject("fileDropDown.Image");
+			fileDropDown.ImageTransparentColor = Color.Magenta;
+			fileDropDown.Name = "fileDropDown";
+			fileDropDown.Overflow = ToolStripItemOverflow.Never;
+			fileDropDown.Size = new Size(56, 29);
+			fileDropDown.Text = "File";
 			// 
 			// generateYAMLsButton
 			// 
-			this.generateYAMLsButton.Name = "generateYAMLsButton";
-			this.generateYAMLsButton.Size = new System.Drawing.Size(333, 34);
-			this.generateYAMLsButton.Text = "Generate YAMLs";
-			this.generateYAMLsButton.Click += new System.EventHandler(this.GenerateYamlsButton_Click);
+			generateYAMLsButton.Name = "generateYAMLsButton";
+			generateYAMLsButton.Size = new Size(333, 34);
+			generateYAMLsButton.Text = "Generate YAMLs";
+			generateYAMLsButton.Click += GenerateYamlsButton_Click;
 			// 
 			// fileSeparator
 			// 
-			this.fileSeparator.Name = "fileSeparator";
-			this.fileSeparator.Size = new System.Drawing.Size(330, 6);
+			fileSeparator.Name = "fileSeparator";
+			fileSeparator.Size = new Size(330, 6);
 			// 
 			// generateMWButton
 			// 
-			this.generateMWButton.Name = "generateMWButton";
-			this.generateMWButton.Size = new System.Drawing.Size(333, 34);
-			this.generateMWButton.Text = "Generate Multiworld Tracker";
-			this.generateMWButton.Click += new System.EventHandler(this.GenerateMWButton_Click);
+			generateMWButton.Name = "generateMWButton";
+			generateMWButton.Size = new Size(333, 34);
+			generateMWButton.Text = "Generate Multiworld Tracker";
+			generateMWButton.Click += GenerateMWButton_Click;
 			// 
 			// editMWButton
 			// 
-			this.editMWButton.Name = "editMWButton";
-			this.editMWButton.Size = new System.Drawing.Size(333, 34);
-			this.editMWButton.Text = "Edit Multiworld Tracker";
-			this.editMWButton.Click += new System.EventHandler(this.EditMWButton_Click);
+			editMWButton.Name = "editMWButton";
+			editMWButton.Size = new Size(333, 34);
+			editMWButton.Text = "Edit Multiworld Tracker";
+			editMWButton.Click += EditMWButton_Click;
 			// 
 			// loadMWButton
 			// 
-			this.loadMWButton.Name = "loadMWButton";
-			this.loadMWButton.Size = new System.Drawing.Size(333, 34);
-			this.loadMWButton.Text = "Load Multiworld Tracker";
-			this.loadMWButton.Click += new System.EventHandler(this.LoadGameButton_Click);
+			loadMWButton.Name = "loadMWButton";
+			loadMWButton.Size = new Size(333, 34);
+			loadMWButton.Text = "Load Multiworld Tracker";
+			loadMWButton.Click += LoadGameButton_Click;
 			// 
 			// settingsDropDown
 			// 
-			this.settingsDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.settingsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.connectionButton});
-			this.settingsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("settingsDropDown.Image")));
-			this.settingsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.settingsDropDown.Name = "settingsDropDown";
-			this.settingsDropDown.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-			this.settingsDropDown.Size = new System.Drawing.Size(94, 29);
-			this.settingsDropDown.Text = "Settings";
+			settingsDropDown.DisplayStyle = ToolStripItemDisplayStyle.Text;
+			settingsDropDown.DropDownItems.AddRange(new ToolStripItem[] { connectionButton });
+			settingsDropDown.Image = (Image)resources.GetObject("settingsDropDown.Image");
+			settingsDropDown.ImageTransparentColor = Color.Magenta;
+			settingsDropDown.Name = "settingsDropDown";
+			settingsDropDown.Overflow = ToolStripItemOverflow.Never;
+			settingsDropDown.Size = new Size(94, 29);
+			settingsDropDown.Text = "Settings";
 			// 
 			// connectionButton
 			// 
-			this.connectionButton.Name = "connectionButton";
-			this.connectionButton.Size = new System.Drawing.Size(204, 34);
-			this.connectionButton.Text = "Connection";
-			this.connectionButton.Click += new System.EventHandler(this.ConnectionSettingsButton_Click);
+			connectionButton.Name = "connectionButton";
+			connectionButton.Size = new Size(204, 34);
+			connectionButton.Text = "Connection";
+			connectionButton.Click += ConnectionSettingsButton_Click;
 			// 
 			// mainStatusStrip
 			// 
-			this.mainStatusStrip.Dock = System.Windows.Forms.DockStyle.None;
-			this.mainStatusStrip.ImageScalingSize = new System.Drawing.Size(24, 24);
-			this.mainStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusPercentageBar,
-            this.statusSpringLabel,
-            this.statusLabel});
-			this.mainStatusStrip.Location = new System.Drawing.Point(0, 0);
-			this.mainStatusStrip.Name = "mainStatusStrip";
-			this.mainStatusStrip.ShowItemToolTips = true;
-			this.mainStatusStrip.Size = new System.Drawing.Size(658, 32);
-			this.mainStatusStrip.SizingGrip = false;
-			this.mainStatusStrip.TabIndex = 0;
-			this.mainStatusStrip.Text = "statusStrip1";
+			mainStatusStrip.Dock = DockStyle.None;
+			mainStatusStrip.ImageScalingSize = new Size(24, 24);
+			mainStatusStrip.Items.AddRange(new ToolStripItem[] { statusPercentageBar, statusSpringLabel, statusLabel });
+			mainStatusStrip.Location = new Point(0, 0);
+			mainStatusStrip.Name = "mainStatusStrip";
+			mainStatusStrip.ShowItemToolTips = true;
+			mainStatusStrip.Size = new Size(731, 32);
+			mainStatusStrip.SizingGrip = false;
+			mainStatusStrip.TabIndex = 0;
+			mainStatusStrip.Text = "statusStrip1";
 			// 
 			// statusPercentageBar
 			// 
-			this.statusPercentageBar.Name = "statusPercentageBar";
-			this.statusPercentageBar.Size = new System.Drawing.Size(300, 24);
+			statusPercentageBar.Name = "statusPercentageBar";
+			statusPercentageBar.Size = new Size(300, 24);
 			// 
 			// statusSpringLabel
 			// 
-			this.statusSpringLabel.Name = "statusSpringLabel";
-			this.statusSpringLabel.Size = new System.Drawing.Size(216, 25);
-			this.statusSpringLabel.Spring = true;
+			statusSpringLabel.Name = "statusSpringLabel";
+			statusSpringLabel.Size = new Size(289, 25);
+			statusSpringLabel.Spring = true;
 			// 
 			// statusLabel
 			// 
-			this.statusLabel.Name = "statusLabel";
-			this.statusLabel.Size = new System.Drawing.Size(123, 25);
-			this.statusLabel.Text = "Current Status";
+			statusLabel.Name = "statusLabel";
+			statusLabel.Size = new Size(123, 25);
+			statusLabel.Text = "Current Status";
 			// 
 			// mainToolStripContainer
 			// 
 			// 
 			// mainToolStripContainer.BottomToolStripPanel
 			// 
-			this.mainToolStripContainer.BottomToolStripPanel.Controls.Add(this.mainStatusStrip);
+			mainToolStripContainer.BottomToolStripPanel.Controls.Add(mainStatusStrip);
 			// 
 			// mainToolStripContainer.ContentPanel
 			// 
-			this.mainToolStripContainer.ContentPanel.Controls.Add(this.mainPictureBox);
-			this.mainToolStripContainer.ContentPanel.Size = new System.Drawing.Size(658, 378);
-			this.mainToolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainToolStripContainer.LeftToolStripPanelVisible = false;
-			this.mainToolStripContainer.Location = new System.Drawing.Point(0, 0);
-			this.mainToolStripContainer.Name = "mainToolStripContainer";
-			this.mainToolStripContainer.RightToolStripPanelVisible = false;
-			this.mainToolStripContainer.Size = new System.Drawing.Size(658, 444);
-			this.mainToolStripContainer.TabIndex = 2;
-			this.mainToolStripContainer.Text = "toolStripContainer1";
+			mainToolStripContainer.ContentPanel.Controls.Add(mainPictureBox);
+			mainToolStripContainer.ContentPanel.Margin = new Padding(3, 4, 3, 4);
+			mainToolStripContainer.ContentPanel.Size = new Size(731, 489);
+			mainToolStripContainer.Dock = DockStyle.Fill;
+			mainToolStripContainer.LeftToolStripPanelVisible = false;
+			mainToolStripContainer.Location = new Point(0, 0);
+			mainToolStripContainer.Margin = new Padding(3, 4, 3, 4);
+			mainToolStripContainer.Name = "mainToolStripContainer";
+			mainToolStripContainer.RightToolStripPanelVisible = false;
+			mainToolStripContainer.Size = new Size(731, 555);
+			mainToolStripContainer.TabIndex = 2;
+			mainToolStripContainer.Text = "toolStripContainer1";
 			// 
 			// mainToolStripContainer.TopToolStripPanel
 			// 
-			this.mainToolStripContainer.TopToolStripPanel.Controls.Add(this.mainToolStrip);
+			mainToolStripContainer.TopToolStripPanel.Controls.Add(mainToolStrip);
 			// 
 			// mainPictureBox
 			// 
-			this.mainPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainPictureBox.Location = new System.Drawing.Point(0, 0);
-			this.mainPictureBox.Name = "mainPictureBox";
-			this.mainPictureBox.Size = new System.Drawing.Size(658, 378);
-			this.mainPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.mainPictureBox.TabIndex = 1;
-			this.mainPictureBox.TabStop = false;
-			this.mainPictureBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.mainPictureBox_MouseMove);
+			mainPictureBox.Dock = DockStyle.Fill;
+			mainPictureBox.Location = new Point(0, 0);
+			mainPictureBox.Margin = new Padding(3, 4, 3, 4);
+			mainPictureBox.Name = "mainPictureBox";
+			mainPictureBox.Size = new Size(731, 489);
+			mainPictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+			mainPictureBox.TabIndex = 1;
+			mainPictureBox.TabStop = false;
+			mainPictureBox.MouseMove += mainPictureBox_MouseMove;
 			// 
 			// Main
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(658, 444);
-			this.Controls.Add(this.mainToolStripContainer);
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.Name = "Main";
-			this.Text = "PT Piranha";
-			this.Load += new System.EventHandler(this.Main_Load);
-			this.ResizeEnd += new System.EventHandler(this.Main_ResizeEnd);
-			this.Resize += new System.EventHandler(this.Main_Resize);
-			this.mainToolStrip.ResumeLayout(false);
-			this.mainToolStrip.PerformLayout();
-			this.mainStatusStrip.ResumeLayout(false);
-			this.mainStatusStrip.PerformLayout();
-			this.mainToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
-			this.mainToolStripContainer.BottomToolStripPanel.PerformLayout();
-			this.mainToolStripContainer.ContentPanel.ResumeLayout(false);
-			this.mainToolStripContainer.TopToolStripPanel.ResumeLayout(false);
-			this.mainToolStripContainer.TopToolStripPanel.PerformLayout();
-			this.mainToolStripContainer.ResumeLayout(false);
-			this.mainToolStripContainer.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.mainPictureBox)).EndInit();
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new SizeF(10F, 25F);
+			AutoScaleMode = AutoScaleMode.Font;
+			ClientSize = new Size(731, 555);
+			Controls.Add(mainToolStripContainer);
+			Icon = (Icon)resources.GetObject("$this.Icon");
+			Margin = new Padding(3, 4, 3, 4);
+			Name = "Main";
+			Text = "PT Piranha";
+			Load += Main_Load;
+			ResizeEnd += Main_ResizeEnd;
+			Resize += Main_Resize;
+			mainToolStrip.ResumeLayout(false);
+			mainToolStrip.PerformLayout();
+			mainStatusStrip.ResumeLayout(false);
+			mainStatusStrip.PerformLayout();
+			mainToolStripContainer.BottomToolStripPanel.ResumeLayout(false);
+			mainToolStripContainer.BottomToolStripPanel.PerformLayout();
+			mainToolStripContainer.ContentPanel.ResumeLayout(false);
+			mainToolStripContainer.TopToolStripPanel.ResumeLayout(false);
+			mainToolStripContainer.TopToolStripPanel.PerformLayout();
+			mainToolStripContainer.ResumeLayout(false);
+			mainToolStripContainer.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)mainPictureBox).EndInit();
+			ResumeLayout(false);
 		}
 
 		#endregion

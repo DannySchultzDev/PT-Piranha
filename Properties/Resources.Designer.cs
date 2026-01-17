@@ -63,16 +63,6 @@ namespace PT_Piranha.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Icon_Flat {
-            get {
-                object obj = ResourceManager.GetObject("Icon Flat", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap OpenfileDialog {
             get {
                 object obj = ResourceManager.GetObject("OpenfileDialog", resourceCulture);
