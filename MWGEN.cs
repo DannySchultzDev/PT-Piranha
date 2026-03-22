@@ -165,7 +165,7 @@ namespace PT_Piranha
 				{
 					if (!Gradient.TryParse(
 						RegistryHelper.GetValue(RegistryName.GRADIENT_DEFAULT,
-						"0|255|0|0\r\n1|0|255|0"),
+						DesignSettings.gradientTrueDefault),
 						out gradient))
 						return;
 				}
@@ -189,7 +189,7 @@ namespace PT_Piranha
 				Color? cellColor = cell.Tag as Color?;
 				if (cellColor == null)
 				{
-					string colorString = RegistryHelper.GetValue(RegistryName.CLEAR_COLOR_DEFAULT, "255|255|0");
+					string colorString = RegistryHelper.GetValue(RegistryName.CLEAR_COLOR_DEFAULT, DesignSettings.clearColorTrueDefault);
 					string[] colorStringParts = colorString.Split('|');
 
 					if (byte.TryParse(colorStringParts[0], out byte r) &&

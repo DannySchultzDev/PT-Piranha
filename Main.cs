@@ -1,6 +1,9 @@
 ﻿using System.Xml.Serialization;
 using Color = System.Drawing.Color;
 using System.ComponentModel;
+using Microsoft.Win32;
+using System.Data;
+using System.Numerics;
 
 namespace PT_Piranha
 {
@@ -10,10 +13,11 @@ namespace PT_Piranha
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public static Main? instance { get; private set; }
 
-		private PictureArrangmentMode pictureArrangmentMode = PictureArrangmentMode.FLUID;
-		private Color fillerColor = Color.White;
+		private ItemGroupStyle itemGroupStyle = ItemGroupStyle.FLUID;
+		public static ShowBackgroundImage showBackgroundImage = ShowBackgroundImage.EMPTY_CELLS_ONLY;
+		public static readonly Color fillerColor = Color.White;
 		private ItemGroup[,] pbn = new ItemGroup[1, 1];
-		private OverlayMode overlayMode = OverlayMode.NORMAL;
+		private OverlayStyle overlayStyle = OverlayStyle.IMAGE_OR_TEXT;
 		private List<(Rectangle area, ItemGroup itemGroup)> overlays =
 			new List<(Rectangle area, ItemGroup itemGroup)>();
 		private static readonly Font overlayFont = new Font(DefaultFont.FontFamily, 30);
@@ -24,7 +28,7 @@ namespace PT_Piranha
 		private static readonly Brush darkbrush = new SolidBrush(Color.Black);
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public static ProgressBarMode progressBarMode { get; private set; } = ProgressBarMode.LOCATIONS;
+		public static ProgressBarStyle progressBarStyle = ProgressBarStyle.LOCATIONS;
 
 		ToolTip mainPictureBoxToolTip = new ToolTip();
 		Point mainPictureBoxLastMousePoint = new Point(0, 0);
@@ -184,15 +188,59 @@ namespace PT_Piranha
 
 		public void CompleteUpdatePicture()
 		{
+			if (!Enum.TryParse(RegistryHelper.GetValue(RegistryName.SHOW_BACKGROUND_IMAGE, DesignSettings.showBackgroundImageTrueDefault), out showBackgroundImage))
+			{
+				if (!Enum.TryParse(DesignSettings.showBackgroundImageTrueDefault, out showBackgroundImage))
+				{
+					Worker.SetStatus("Could not parse show background image or its default.");
+				}
+				RegistryHelper.SetValue(RegistryName.SHOW_BACKGROUND_IMAGE, DesignSettings.showBackgroundImageTrueDefault);
+			}
+
+			if (!Enum.TryParse(RegistryHelper.GetValue(RegistryName.ITEM_GROUP_STYLE, DesignSettings.itemGroupStyleTrueDefault), out itemGroupStyle))
+			{
+				if (!Enum.TryParse(DesignSettings.itemGroupStyleTrueDefault, out itemGroupStyle))
+				{
+					Worker.SetStatus("Could not parse item group style or its default.");
+				}
+				RegistryHelper.SetValue(RegistryName.ITEM_GROUP_STYLE, DesignSettings.itemGroupStyleTrueDefault);
+			}
+
+			if (!Enum.TryParse(RegistryHelper.GetValue(RegistryName.PROGRESS_BAR_STYLE, DesignSettings.progressBarStyleTrueDefault), out progressBarStyle))
+			{
+				if (!Enum.TryParse(DesignSettings.progressBarStyleTrueDefault, out progressBarStyle))
+				{
+					Worker.SetStatus("Could not parse progress bar style or its default.");
+				}
+				RegistryHelper.SetValue(RegistryName.PROGRESS_BAR_STYLE, DesignSettings.progressBarStyleTrueDefault);
+			}
+
+			if (!Enum.TryParse(RegistryHelper.GetValue(RegistryName.OVERLAY_STYLE, DesignSettings.overlayStyleTrueDefault), out overlayStyle))
+			{
+				if (!Enum.TryParse(DesignSettings.overlayStyleTrueDefault, out overlayStyle))
+				{
+					Worker.SetStatus("Could not parse overlay style or its default.");
+				}
+				RegistryHelper.SetValue(RegistryName.OVERLAY_STYLE, DesignSettings.overlayStyleTrueDefault);
+			}
+
 			pbn = new ItemGroup[mainPictureBox.Width, mainPictureBox.Height];
-			overlays.Clear();
 
 			if (worlds.Count > 0)
 			{
-				switch (pictureArrangmentMode)
+				switch (itemGroupStyle)
 				{
-					case PictureArrangmentMode.FLUID:
-						UpdatePictureFluid(pbn);
+					case ItemGroupStyle.SEPERATE_GAMES:
+						UpdatePictureSeperateGames(pbn, overlays);
+						break;
+					case ItemGroupStyle.FLUID:
+						UpdatePictureFluid(pbn, overlays);
+						break;
+					case ItemGroupStyle.JUMBLE:
+						UpdatePictureJumble(pbn, overlays);
+						break;
+					case ItemGroupStyle.VORONOI:
+						UpdatePictureVoronoi(pbn, overlays);
 						break;
 					default:
 						throw new NotImplementedException("Picture arrangment mode not implemented.");
@@ -210,25 +258,99 @@ namespace PT_Piranha
 				return;
 			}
 
-			Bitmap bmp = new Bitmap(pbn.GetLength(0), pbn.GetLength(1));
-			DrawBackground(bmp);
-			DrawSegments(bmp, pbn);
-			DrawOverlays(bmp, overlays);
+			if (pbn.GetLength(0) >= 1 &&
+				pbn.GetLength(1) >= 1)
+			{
+				Bitmap bmp = new Bitmap(pbn.GetLength(0), pbn.GetLength(1));
+				DrawBackground(bmp);
+				DrawSegments(bmp, pbn);
+				DrawOverlays(bmp, overlays);
+
+				Image imgOld = mainPictureBox.Image;
+				mainPictureBox.Image = bmp;
+				if (imgOld != null)
+					imgOld.Dispose();
+			}
 
 			UpdateProgressBar();
-
-			Image imgOld = mainPictureBox.Image;
-			mainPictureBox.Image = bmp;
-			if (imgOld != null)
-				imgOld.Dispose();
 
 			mainPictureBox.Refresh();
 		}
 
 		private void DrawBackground(Bitmap bmp)
 		{
-			using (Graphics g = Graphics.FromImage(bmp))
-				g.Clear(fillerColor);
+			using Graphics graphics = Graphics.FromImage(bmp);
+
+			Image? backgroundImage = null;
+			try
+			{
+				ImageGetter.TryGetImage(RegistryHelper.GetValue(RegistryName.BACKGROUND_IMAGE, string.Empty), out backgroundImage);
+			}
+			catch (Exception ex)
+			{
+				Worker.SetStatus("Could not get background image: " + 
+					RegistryHelper.GetValue(RegistryName.BACKGROUND_IMAGE, string.Empty) + 
+					" because: " + ex.Message);
+				return;
+			}
+
+			graphics.Clear(fillerColor);
+
+			if (backgroundImage == null)
+				return;
+
+			if (!Enum.TryParse(RegistryHelper.GetValue(RegistryName.BACKGROUND_IMAGE_STYLE, DesignSettings.backgroundImageStyleTrueDefault), out BackgroundImageStyle backgroundImageStyle))
+			{
+				if (!Enum.TryParse(DesignSettings.backgroundImageStyleTrueDefault, out backgroundImageStyle))
+				{
+					Worker.SetStatus("Could not parse background image style or its default.");
+					return;
+				}
+				RegistryHelper.SetValue(RegistryName.BACKGROUND_IMAGE_STYLE, DesignSettings.backgroundImageStyleTrueDefault);
+			}
+
+			switch (backgroundImageStyle)
+			{
+				case BackgroundImageStyle.TILE:
+					for (int y = 0; y < bmp.Height; y += backgroundImage.Height)
+					{
+						for (int x = 0;  x < bmp.Width; x += backgroundImage.Width)
+						{
+							graphics.DrawImage(backgroundImage, new Rectangle(x, y, backgroundImage.Width, backgroundImage.Height));
+						}
+					}
+					break;
+				case BackgroundImageStyle.STRETCH:
+					graphics.DrawImage(backgroundImage, new Rectangle(0, 0, bmp.Width, bmp.Height));
+					break;
+				case BackgroundImageStyle.CLIP:
+					graphics.DrawImage(backgroundImage, new Rectangle(
+						(bmp.Width / 2) - (backgroundImage.Width / 2),
+						(bmp.Height / 2) - (backgroundImage.Height / 2),
+						backgroundImage.Width,
+						backgroundImage.Height));
+					break;
+				case BackgroundImageStyle.FIT:
+					float bmpRatio = bmp.Width / (float)bmp.Height;
+					float backgroundImageRatio = backgroundImage.Width / (float)backgroundImage.Height;
+					if (bmpRatio >= backgroundImageRatio)
+						graphics.DrawImage(backgroundImage, new Rectangle(
+							(bmp.Width / 2) - (int)(backgroundImageRatio * bmp.Height / 2.0f),
+							0,
+							(int)(backgroundImageRatio * bmp.Height),
+							bmp.Height));
+					else
+						graphics.DrawImage(backgroundImage, new Rectangle(
+							0,
+							(bmp.Height / 2) - (int)(backgroundImage.Height * bmp.Width / (float)backgroundImage.Width / 2),
+							bmp.Width,
+							(int)(backgroundImage.Height * bmp.Width / (float)backgroundImage.Width)));
+					break;
+				default:
+					Worker.SetStatus("Background image style has not been implemented.");
+					return;
+			}
+
 		}
 
 		private void DrawSegments(Bitmap bmp, ItemGroup[,] pbn)
@@ -239,7 +361,9 @@ namespace PT_Piranha
 				{
 					if (pbn[i, j] == null)
 						continue;
-					bmp.SetPixel(i, j, pbn[i, j].GetColor());
+					Color? color = pbn[i, j].GetColor();
+					if ( color != null)
+						bmp.SetPixel(i, j, (Color)color);
 				}
 			}
 		}
@@ -249,7 +373,27 @@ namespace PT_Piranha
 			using (Graphics graphics = Graphics.FromImage(bmp))
 			{
 				//Turn off anti aliasing for pixel art.
-				if (RegistryHelper.GetValue(RegistryName.OVERLAY_INTERPOLATION, 1) == 0)
+				//Overlay Interpolation originally saved an int to the registry.
+				//If the user has an old registry value, update it.
+				OverlayInterpolation overlayInterpolation;
+				if (RegistryHelper.GetValueType(RegistryName.OVERLAY_INTERPOLATION) == RegistryValueKind.DWord)
+				{
+					overlayInterpolation = (OverlayInterpolation)RegistryHelper.GetValue(RegistryName.OVERLAY_INTERPOLATION, 0);
+					RegistryHelper.SetValue(RegistryName.OVERLAY_INTERPOLATION, overlayInterpolation.ToString());
+				}
+				else
+				{
+					if (!Enum.TryParse(
+						RegistryHelper.GetValue(RegistryName.OVERLAY_INTERPOLATION, DesignSettings.overlayInterpolationTrueDefault),
+						out overlayInterpolation))
+					{
+						if (!Enum.TryParse(DesignSettings.overlayInterpolationTrueDefault,
+							out overlayInterpolation))
+							throw new Exception("Overlay interpolation and its default are invalid.");
+						RegistryHelper.SetValue(RegistryName.OVERLAY_INTERPOLATION, DesignSettings.overlayInterpolationTrueDefault);
+					}
+				}
+				if (overlayInterpolation == OverlayInterpolation.NONE)
 				{
 					graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 					graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
@@ -257,7 +401,9 @@ namespace PT_Piranha
 
 				foreach ((Rectangle area, ItemGroup itemGroup) overlay in overlays)
 				{
-					graphics.DrawImage(GetImageFromOverlay(overlay.itemGroup, overlay.area), overlay.area);
+					Image? overlayImage = GetImageFromOverlay(overlay.itemGroup, overlay.area, overlayStyle);
+					if (overlayImage != null)
+						graphics.DrawImage(overlayImage, overlay.area);
 				}
 			}
 		}
@@ -269,9 +415,22 @@ namespace PT_Piranha
 			int currItems = 0;
 			int totalItems = 0;
 
-			switch (progressBarMode)
+			string progressBarToolTip = string.Empty;
+
+			switch (progressBarStyle)
 			{
-				case ProgressBarMode.ITEM_GROUPDS:
+				case ProgressBarStyle.LOCATIONS:
+					foreach (World world in worlds)
+					{
+						currItems += (int)world.locationsChecked;
+						totalItems += (int)world.locationsTotal;
+					}
+
+					progressBarToolTip =
+						currItems.ToString() + " locations checked out of " + totalItems.ToString();
+
+					break;
+				case ProgressBarStyle.ITEM_GROUPS:
 					foreach (World world in worlds)
 						itemGroups.AddRange(world.itemGroups);
 
@@ -281,15 +440,66 @@ namespace PT_Piranha
 						totalItems += itemGroup.maxCount;
 					}
 
-					break;
-				case ProgressBarMode.LOCATIONS:
-					foreach (World world in worlds)
-					{
-						currItems += (int)world.locationsChecked;
-						totalItems += (int)world.locationsTotal;
-					}
+					progressBarToolTip =
+						currItems.ToString() + " items collected out of " + totalItems.ToString();
 
 					break;
+				case ProgressBarStyle.ITEM_GROUPS_COMPLETED:
+					foreach (World world in worlds)
+						itemGroups.AddRange(world.itemGroups);
+
+					foreach (ItemGroup itemGroup in itemGroups)
+					{
+						currItems += itemGroup.count >= itemGroup.maxCount ? 1 : 0;
+						++totalItems;
+					}
+
+					progressBarToolTip =
+						currItems.ToString() + " item groups completed out of " + totalItems.ToString();
+
+					break;
+				case ProgressBarStyle.GAME_PERCENTAGES:
+					float gamePercentages = 0.0f;
+					int games = 0;
+					foreach (World world in worlds)
+					{
+						gamePercentages += world.locationsChecked / (float)world.locationsTotal;
+						++games;
+					}	
+
+					if (games == 0)
+					{
+						currItems = 0;
+						totalItems = 1;
+
+						progressBarToolTip =
+							"No games loaded";
+					}
+					else
+					{
+						gamePercentages /= games;
+						gamePercentages *= 100;
+
+						currItems = (int)gamePercentages;
+						totalItems = 100;
+
+						progressBarToolTip = 
+							"Average game completion is " + gamePercentages.ToString("F2");
+					}
+					break;
+				case ProgressBarStyle.GAMES_COMPLETED:
+					foreach (World world in worlds)
+					{
+						currItems += world.hasGoaled ? 1 : 0;
+						++totalItems;
+					}
+
+					progressBarToolTip = currItems + " games completed out of " + totalItems;
+
+					break;
+				default:
+					Worker.SetStatus("Proggress bar style has not been implemented.");
+					return;
 			}
 
 			if (currItems > totalItems)
@@ -302,25 +512,103 @@ namespace PT_Piranha
 			statusPercentageBar.Value = currItems;
 			statusPercentageBar.Minimum = 0;
 
-			switch (progressBarMode)
+			statusPercentageBar.ToolTipText = progressBarToolTip;
+		}
+
+		private void UpdatePictureSeperateGames(ItemGroup[,] pbn, List<(Rectangle area, ItemGroup itemGroup)> overlays)
+		{
+			int columnCount = 0;
+			float itemGroupSize;
+			int rowCount;
+
+			bool itemSlotsContatined = false;
+
+			do
 			{
-				case ProgressBarMode.ITEM_GROUPDS:
-					statusPercentageBar.ToolTipText =
-						currItems.ToString() + " items collected out of " + totalItems.ToString();
-					break;
-				case ProgressBarMode.LOCATIONS:
-					statusPercentageBar.ToolTipText =
-						currItems.ToString() + " locations checked out of " + totalItems.ToString();
-					break;
+				++columnCount;
+				itemGroupSize = pbn.GetLength(0) / (float)columnCount;
+				rowCount = (int)(pbn.GetLength(1) / itemGroupSize);
+
+				int rowsUsed = 0;
+
+				foreach (World world in worlds)
+				{
+					int itemGroupsCount = world.itemGroups.Count;
+					rowsUsed += (int)MathF.Ceiling(itemGroupsCount / (float)columnCount);
+					if (rowsUsed > rowCount)
+						break;
+				}
+
+				if (rowsUsed <= rowCount)
+				{
+					itemSlotsContatined = true;
+					rowCount = rowsUsed;
+				}
+
+			} while (!itemSlotsContatined);
+
+			overlays.Clear();
+
+			int currRow = 0;
+			int currColumn = 0;
+
+			foreach (World world in worlds)
+			{
+				foreach (ItemGroup itemGroup in world.itemGroups)
+				{
+					if (currColumn >= columnCount)
+					{
+						currColumn = 0;
+						++currRow;
+					}
+
+					Rectangle area = new Rectangle(
+						currColumn * pbn.GetLength(0) / columnCount,
+						currRow * pbn.GetLength(1) / rowCount,
+						pbn.GetLength(0) / columnCount,
+						pbn.GetLength(1) / rowCount);
+
+					for (int y = 0; y < area.Height; ++y)
+					{
+						for (int x = 0; x < area.Width; ++x)
+						{
+							pbn[x + area.Left, y + area.Top] = itemGroup;
+						}
+					}
+
+					overlays.Add((area, itemGroup));
+
+					++currColumn;
+				}
+
+				currColumn = 0;
+				++currRow;
 			}
 		}
 
-		private void UpdatePictureFluid(ItemGroup[,] pbn)
+		private void UpdatePictureFluid(ItemGroup[,] pbn, List<(Rectangle area, ItemGroup itemGroup)> overlays)
 		{
 			List<ItemGroup> itemGroups = new List<ItemGroup>();
 			foreach (World world in worlds)
 				itemGroups.AddRange(world.itemGroups);
+			UpdatePictureFluid(pbn, overlays, itemGroups);
+		}
 
+		private void UpdatePictureJumble(ItemGroup[,] pbn, List<(Rectangle area, ItemGroup itemGroup)> overlays)
+		{
+			Random rand = new Random(0);
+
+			List<ItemGroup> itemGroups = new List<ItemGroup>();
+			foreach (World world in worlds)
+			{
+				foreach (ItemGroup itemGroup in world.itemGroups)
+					itemGroups.Insert(rand.Next(itemGroups.Count + 1), itemGroup);
+			}
+			UpdatePictureFluid(pbn, overlays, itemGroups);
+		}
+
+		private void UpdatePictureFluid(ItemGroup[,] pbn, List<(Rectangle area, ItemGroup itemGroup)> overlays, List<ItemGroup> itemGroups)
+		{
 			int columnCount = 1;
 			float itemGroupSize = pbn.GetLength(0) / (float)columnCount;
 			int rowCount = (int)(pbn.GetLength(1) / itemGroupSize);
@@ -337,6 +625,8 @@ namespace PT_Piranha
 
 			if (rowCount == 1)
 				columnCount = itemGroups.Count;
+
+			overlays.Clear();
 
 			for (int rowID = 0; rowID < rowCount; ++rowID)
 			{
@@ -369,43 +659,216 @@ namespace PT_Piranha
 			}
 		}
 
-		private Image GetImageFromOverlay(ItemGroup itemGroup, Rectangle targetArea)
+		private void UpdatePictureVoronoi(ItemGroup[,] pbn, List<(Rectangle area, ItemGroup itemGroup)> overlays)
+		{
+			List<ItemGroup> itemGroups = new List<ItemGroup>();
+			foreach (World world in worlds)
+				itemGroups.AddRange(world.itemGroups);
+
+			overlays.Clear();
+
+			//If the size of the picture box is too small, don't draw anything.
+			if (pbn.GetLength(0) * pbn.GetLength(1) < itemGroups.Count)
+				return;
+
+			Dictionary<Point, ItemGroup> itemGroupPoints = new Dictionary<Point, ItemGroup>();
+
+			Random rand = new Random(0);
+
+			foreach(ItemGroup itemGroup in itemGroups)
+			{
+				Point point;
+				
+				do
+				{
+					point = new Point(
+					rand.Next(int.MaxValue) % pbn.GetLength(0),
+					rand.Next(int.MaxValue) % pbn.GetLength(1));
+				} while (itemGroupPoints.ContainsKey(point));
+
+				itemGroupPoints[point] = itemGroup;
+			}
+
+			Point[] points = itemGroupPoints.Keys.ToArray();
+
+			for (int y = 0; y < pbn.GetLength(1); ++y)
+			{
+				for (int x = 0; x < pbn.GetLength(0); ++x)
+				{
+					Vector2 currPos = new Vector2(x, y);
+					float closestDistSqrd = float.MaxValue;
+					Point closestPoint = points[0];
+
+					foreach (Point point in points)
+					{
+						float distSqrd = Vector2.DistanceSquared(currPos, new Vector2(point.X, point.Y));
+						if (distSqrd < closestDistSqrd)
+						{
+							closestPoint = point;
+							closestDistSqrd = distSqrd;
+						}
+					}
+
+					pbn[x, y] = itemGroupPoints[closestPoint];
+				}
+			}
+
+			foreach (Point point in points)
+			{
+				Point topLeft = point;
+				while (
+					topLeft.X > 0 &&
+					topLeft.Y > 0 &&
+					pbn[topLeft.X - 1, topLeft.Y - 1].Equals(itemGroupPoints[point]))
+				{
+					topLeft.Offset(-1, -1);
+				}
+				while (
+					topLeft.X > 0 &&
+					pbn[topLeft.X - 1, topLeft.Y].Equals(itemGroupPoints[point]))
+				{
+					topLeft.Offset(-1, 0);
+				}
+				while (
+					topLeft.Y > 0 &&
+					pbn[topLeft.X, topLeft.Y - 1].Equals(itemGroupPoints[point]))
+				{
+					topLeft.Offset(0, -1);
+				}
+				Point topRight = point;
+				while (
+					topRight.X < pbn.GetLength(0) - 1 &&
+					topRight.Y > 0 &&
+					pbn[topRight.X + 1, topRight.Y - 1].Equals(itemGroupPoints[point]))
+				{
+					topRight.Offset(1, -1);
+				}
+				while (
+					topRight.X < pbn.GetLength(0) - 1 &&
+					pbn[topRight.X + 1, topRight.Y].Equals(itemGroupPoints[point]))
+				{
+					topRight.Offset(1, 0);
+				}
+				while (
+					topRight.Y > 0 &&
+					pbn[topRight.X, topRight.Y - 1].Equals(itemGroupPoints[point]))
+				{
+					topRight.Offset(0, -1);
+				}
+				Point bottomLeft = point;
+				while (
+					bottomLeft.X > 0 &&
+					bottomLeft.Y < pbn.GetLength(1) - 1 &&
+					pbn[bottomLeft.X - 1, bottomLeft.Y + 1].Equals(itemGroupPoints[point]))
+				{
+					bottomLeft.Offset(-1, 1);
+				}
+				while (
+					bottomLeft.X > 0 &&
+					pbn[bottomLeft.X - 1, bottomLeft.Y].Equals(itemGroupPoints[point]))
+				{
+					bottomLeft.Offset(-1, 0);
+				}
+				while (
+					bottomLeft.Y < pbn.GetLength(1) - 1 &&
+					pbn[bottomLeft.X, bottomLeft.Y + 1].Equals(itemGroupPoints[point]))
+				{
+					bottomLeft.Offset(0, 1);
+				}
+				Point bottomRight = point;
+				while (
+					bottomRight.X < pbn.GetLength(0) - 1 &&
+					bottomRight.Y < pbn.GetLength(1) - 1 &&
+					pbn[bottomRight.X + 1, bottomRight.Y + 1].Equals(itemGroupPoints[point]))
+				{
+					bottomRight.Offset(1, 1);
+				}
+				while (
+					bottomRight.X < pbn.GetLength(0) - 1 &&
+					pbn[bottomRight.X + 1, bottomRight.Y].Equals(itemGroupPoints[point]))
+				{
+					bottomRight.Offset(1, 0);
+				}
+				while (
+					bottomRight.Y < pbn.GetLength(1) - 1 &&
+					pbn[bottomRight.X, bottomRight.Y + 1].Equals(itemGroupPoints[point]))
+				{
+					bottomRight.Offset(0, 1);
+				}
+
+				int left = Math.Max(topLeft.X, bottomLeft.X);
+				int top = Math.Max(topLeft.Y, topRight.Y);
+
+				overlays.Add((new Rectangle(
+					left,
+					top,
+					Math.Min(topRight.X, bottomRight.X) - left,
+					Math.Min(bottomLeft.Y, bottomRight.Y) - top),
+					itemGroupPoints[point]));
+			}
+		}
+
+		private Image? GetImageFromOverlay(ItemGroup itemGroup, Rectangle targetArea, OverlayStyle overlayStyle)
 		{
 			Image overlay = null;
 
-			switch (overlayMode)
+			Color? itemGroupColor = itemGroup.GetColor();
+			if (itemGroupColor == null)
+				return null;
+
+			switch (overlayStyle)
 			{
-				case OverlayMode.NORMAL:
+				case OverlayStyle.IMAGE_OR_TEXT:
 					if (itemGroup.overlay != null)
 						overlay = itemGroup.overlay;
 					else
-						overlay = DrawTextToImage(itemGroup.ToString(), itemGroup.GetColor());
+						overlay = DrawTextToImage(itemGroup.ToString(), (Color)itemGroupColor);
 					break;
-				case OverlayMode.ALL_TEXT:
-					overlay = DrawTextToImage(itemGroup.ToString(), itemGroup.GetColor());
+				case OverlayStyle.COMBO:
+					Image? imageOverlay = GetImageFromOverlay(itemGroup, new Rectangle(0, 0, targetArea.Width, (int)(targetArea.Height * 2 / 3.0f)), OverlayStyle.IMAGE_ONLY);
+					if (imageOverlay == null)
+						goto case OverlayStyle.TEXT_ONLY;
+
+						Image? textOverlay = GetImageFromOverlay(itemGroup, new Rectangle(0, 0, targetArea.Width, (int)(targetArea.Height / 3.0f)), OverlayStyle.COMBO_STRING);
+					if (textOverlay == null)
+						goto case OverlayStyle.IMAGE_ONLY;
+
+					overlay = new Bitmap(targetArea.Width, targetArea.Height);
+					using (Graphics graphics = Graphics.FromImage(overlay))
+					{
+						graphics.DrawImage(imageOverlay, new Rectangle(0, 0, targetArea.Width, (int)(targetArea.Height * 2 / 3.0f)));
+						graphics.DrawImage(textOverlay, new Rectangle(0, (int)(targetArea.Height * 2 / 3.0f), targetArea.Width, (int)(targetArea.Height / 3.0f)));
+					}
 					break;
-				case OverlayMode.ONLY_IMAGE:
+				case OverlayStyle.TEXT_ONLY:
+					overlay = DrawTextToImage(itemGroup.ToString(), (Color)itemGroupColor);
+					break;
+				case OverlayStyle.IMAGE_ONLY:
 					if (itemGroup.overlay != null)
 						overlay = itemGroup.overlay;
 					else
 						return null;
 					break;
-				case OverlayMode.NONE:
+				case OverlayStyle.NONE:
 					return null;
+				case OverlayStyle.COMBO_STRING:
+					overlay = DrawTextToImage(itemGroup.ToComboString(), (Color)itemGroupColor);
+					break;
 				default:
-					throw new NotImplementedException("OverlayMode of: " + overlayMode.ToString() + " not implemented.");
+					throw new NotImplementedException("OverlayMode of: " + overlayStyle.ToString() + " not implemented.");
 			}
 
 			//Pad image so it has same aspect ratio as target area.
 			Image extendedOverlay;
 			float overlayRatio = overlay.Width / (float)overlay.Height;
-			float areaRatio = targetArea.Width / (float)targetArea.Height;
+			int areaHeight = targetArea.Height != 0 ? targetArea.Height : 1;
+			float areaRatio = targetArea.Width / (float)areaHeight;
 			if (overlayRatio == areaRatio)
 				extendedOverlay = overlay;
 			else if (overlayRatio > areaRatio)
 			{
 				extendedOverlay = new Bitmap(overlay.Width, (int)(overlay.Width / areaRatio));
-				
+
 				using (Graphics graphics = Graphics.FromImage(extendedOverlay))
 					graphics.DrawImage(overlay, new Rectangle(0, (extendedOverlay.Height / 2) - (overlay.Height / 2), extendedOverlay.Width, overlay.Height));
 			}
@@ -478,7 +941,7 @@ namespace PT_Piranha
 				if (DateTime.Now - File.GetLastWriteTime(file) > TimeSpan.FromDays(30))
 				{
 					File.Delete(file);
-					Worker.SetStatus("Deleted old log: " + Path.GetFileName(file));
+					Worker.SetStatus("Deleted old log: " + Path.GetFileName(file), true);
 				}
 			}
 
@@ -563,53 +1026,12 @@ namespace PT_Piranha
 				Worker.CompleteRedraw();
 			}
 		}
-	}
 
-	public enum PictureArrangmentMode
-	{ 
-		/// <summary>
-		/// Games are kept on seperate rows.
-		/// </summary>
-		SPACED,
-		/// <summary>
-		/// Games flow continuously.
-		/// </summary>
-		FLUID,
-		/// <summary>
-		/// All item groups are shuffled on the board.
-		/// </summary>
-		JUMBLE
-	}
-
-	public enum ProgressBarMode
-	{
-		/// <summary>
-		/// Base progress bar percentage on the number of locations checked across all worlds.
-		/// </summary>
-		LOCATIONS,
-		/// <summary>
-		/// Base progress bar percentage on the sum of percentages of each item group of the multiworld tracker.
-		/// </summary>
-		ITEM_GROUPDS
-	}
-
-	public enum OverlayMode
-	{
-		/// <summary>
-		/// If itemgroup has an image use that, otherwise use text.
-		/// </summary>
-		NORMAL,
-		/// <summary>
-		/// Show all itemgroups as text.
-		/// </summary>
-		ALL_TEXT,
-		/// <summary>
-		/// If itemgroup has an image use that, otherwise don't show overlay.
-		/// </summary>
-		ONLY_IMAGE,
-		/// <summary>
-		/// Don't show overlay.
-		/// </summary>
-		NONE
+		private void designToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			DesignSettings designSettings = new DesignSettings();
+			if (designSettings.ShowDialog() == DialogResult.OK)
+				Worker.CompleteRedraw();
+		}
 	}
 }

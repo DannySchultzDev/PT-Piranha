@@ -60,19 +60,21 @@ If you need to make an edit to your Multiworld Tracker, you can reopen the Multi
 <h2>Future Plans</h2>
 Bug fixes/minor changes, lots of them.<br/>
 Current issues include:<br/>
-Joining a room causes clients to complain about a bad request.<br/>
+Joining a room causes room to complain about a bad request.<br/>
 Add field for password.<br/>
 Add auto refresh if disconnected or at least a button to reload.<br/>
 Images should be auto cropped for transparency, and then given a buffer.<br/>
 Add the ability to move rows in the Multiworld Tracker Generator.<br/>
 Deleting or moving a row in the Multiworld Tracker Generator should adjust other tables.<br/>
+Allow specific locations to be tracked by adding them to item group parts (Assuming is location is checked for the item group).<br/>
+Minor improvements to some design styles (Seperate games has visible seams, Voronoi doesn't get center of mass).<br/>
+Adding additional design styles (Show image when all locations checked).<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
 Major changes:<br/>
-Adding more display options for the Multiworld Tracker viewer (Seperated by game, jumbled, count to size correlated, voronoi).<br/>
-Image support for clear color.<br/>
 Additional Gradient Styles (clamp to next).<br/>
-Add Hot Generator (Generate a tracker during a game, using the games internal messages to build up the tracker).
-Refactoring for code readability.
+Add Hot Generator (Generate a tracker during a game, using the games internal messages to build up the tracker).<br/>
+Refactoring for code readability.<br/>
+Shoal Support (Reference multiple .piranha files so changing the .piranha files changes all .shoal files referencing).
 <h2>Naming</h2>
 PT stands for Pizza Tower since that was the first use case. Specifically named after the Piraneapple enemy.

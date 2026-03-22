@@ -32,6 +32,13 @@ namespace PT_Piranha
 			return (T)key.GetValue(name.ToString(), defaultValue);
 		}
 
+		public static RegistryValueKind? GetValueType(RegistryName name)
+		{
+			if (!key.GetValueNames().Contains(name.ToString()))
+				return null;
+			return key.GetValueKind(name.ToString());
+		}
+
 		public static void SetValue<T>(RegistryName name, T value)
 		{
 			if (!typeDict.TryGetValue(typeof(T),out RegistryValueKind kind))
@@ -53,10 +60,16 @@ namespace PT_Piranha
 		SHOW_CONNECTION_SETTINGS,
 
 		WORLD_COUNT_DEFAULT,
-		GRADIENT_DEFAULT,
-		CLEAR_COLOR_DEFAULT,
 		ITEM_GROUP_PART_VALUE_DEFAULT,
 
+		GRADIENT_DEFAULT,
+		CLEAR_COLOR_DEFAULT,
+		BACKGROUND_IMAGE,
+		BACKGROUND_IMAGE_STYLE,
+		SHOW_BACKGROUND_IMAGE,
+		ITEM_GROUP_STYLE,
+		PROGRESS_BAR_STYLE,
+		OVERLAY_STYLE,
 		OVERLAY_INTERPOLATION
 	}
 }

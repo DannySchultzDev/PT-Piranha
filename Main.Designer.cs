@@ -49,6 +49,7 @@
 			statusLabel = new ToolStripStatusLabel();
 			mainToolStripContainer = new ToolStripContainer();
 			mainPictureBox = new PictureBox();
+			designToolStripMenuItem = new ToolStripMenuItem();
 			mainToolStrip.SuspendLayout();
 			mainStatusStrip.SuspendLayout();
 			mainToolStripContainer.BottomToolStripPanel.SuspendLayout();
@@ -163,7 +164,7 @@
 			// settingsDropDown
 			// 
 			settingsDropDown.DisplayStyle = ToolStripItemDisplayStyle.Text;
-			settingsDropDown.DropDownItems.AddRange(new ToolStripItem[] { connectionButton });
+			settingsDropDown.DropDownItems.AddRange(new ToolStripItem[] { connectionButton, designToolStripMenuItem });
 			settingsDropDown.Image = (Image)resources.GetObject("settingsDropDown.Image");
 			settingsDropDown.ImageTransparentColor = Color.Magenta;
 			settingsDropDown.Name = "settingsDropDown";
@@ -174,7 +175,7 @@
 			// connectionButton
 			// 
 			connectionButton.Name = "connectionButton";
-			connectionButton.Size = new Size(204, 34);
+			connectionButton.Size = new Size(270, 34);
 			connectionButton.Text = "Connection";
 			connectionButton.Click += ConnectionSettingsButton_Click;
 			// 
@@ -246,6 +247,13 @@
 			mainPictureBox.TabStop = false;
 			mainPictureBox.MouseMove += mainPictureBox_MouseMove;
 			// 
+			// designToolStripMenuItem
+			// 
+			designToolStripMenuItem.Name = "designToolStripMenuItem";
+			designToolStripMenuItem.Size = new Size(270, 34);
+			designToolStripMenuItem.Text = "Design";
+			designToolStripMenuItem.Click += designToolStripMenuItem_Click;
+			// 
 			// Main
 			// 
 			AutoScaleDimensions = new SizeF(10F, 25F);
@@ -296,5 +304,6 @@
 		private System.Windows.Forms.ToolStripDropDownButton settingsDropDown;
 		private System.Windows.Forms.ToolStripMenuItem connectionButton;
 		private System.Windows.Forms.ToolStripButton resetButton;
+		private ToolStripMenuItem designToolStripMenuItem;
 	}
 }

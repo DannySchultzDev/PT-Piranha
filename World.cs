@@ -1,4 +1,5 @@
 ﻿using Archipelago.MultiClient.Net;
+using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Helpers;
 using Archipelago.MultiClient.Net.Models;
 using Newtonsoft.Json.Linq;
@@ -28,6 +29,8 @@ namespace PT_Piranha
 		public uint locationsTotal = 0;
 		public uint locationsChecked = 0;
 
+		public bool hasGoaled = false;
+
 		public World(string game, string player, List<ItemGroup> itemGroups)
 		{
 			this.game = game;
@@ -56,7 +59,7 @@ namespace PT_Piranha
 				LoginResult loginResult = session.TryConnectAndLogin(
 					game,
 					player,
-					Archipelago.MultiClient.Net.Enums.ItemsHandlingFlags.AllItems,
+					ItemsHandlingFlags.AllItems,
 					new Version(
 						RegistryHelper.GetValue(RegistryName.VERSION_MAJOR, 0), 
 						RegistryHelper.GetValue(RegistryName.VERSION_MINOR, 6),
@@ -65,6 +68,11 @@ namespace PT_Piranha
 
 				if (loginResult == null)
 					throw new Exception("Login result was null.");
+
+				hasGoaled = session.DataStorage.GetClientStatus() == 
+					ArchipelagoClientState.ClientGoal;
+
+				session.DataStorage.TrackClientStatus(OnStatusUpdated);
 
 				LocationChecked(null);
 
@@ -83,21 +91,36 @@ namespace PT_Piranha
 			}
 		}
 
+		private void OnStatusUpdated(ArchipelagoClientState state)
+		{
+			hasGoaled = state == ArchipelagoClientState.ClientGoal;
+
+			if (hasGoaled)
+			{
+				Worker.SetStatus(player + " has goaled");
+				Worker.Redraw();
+			}
+		}
+
 		public void ReceivedItem(ReceivedItemsHelper helper)
 		{
 			ItemInfo itemInfo = helper.DequeueItem();
 			while (itemInfo != null)
 			{
-				Worker.SetStatus(player + " received " + itemInfo.ItemName);
+				Worker.SetStatus(player + " received " + itemInfo.ItemName + " from " + itemInfo.LocationName);
+				bool fromServer = 
+					itemInfo.LocationName.Equals("Server") ||
+					itemInfo.LocationName.Equals("Cheat Console");
 				foreach (ItemGroup itemGroup in itemGroups)
 				{
 					if (itemGroup.isLocations)
 						continue;
 
-
 					if (itemInfo.ItemName.Equals(itemGroup.name))
 					{
 						++itemGroup.count;
+						if (fromServer)
+							++itemGroup.maxCount;
 					}
 					else
 					{
@@ -106,6 +129,8 @@ namespace PT_Piranha
 							if (itemInfo.ItemName.Equals(target.name))
 							{
 								itemGroup.count += (int)target.value;
+								if (fromServer)
+									itemGroup.maxCount += (int)target.value;
 								break;
 							}
 						}
@@ -191,9 +216,6 @@ namespace PT_Piranha
 		//The number of instances in the game.
 		public int maxCount = 0;
 
-		private static long indexer = 0;
-		public readonly long index = indexer++;
-
 		public ItemGroup(string name, List<(string name, uint value)> targets, bool isLocations, Gradient gradient, Color clearColor, Image overlay)
 		{
 			this.name = name;
@@ -204,12 +226,30 @@ namespace PT_Piranha
 			this.overlay = overlay;
 		}
 
-		public Color GetColor()
+		public Color? GetColor()
 		{
-			if (count >= maxCount)
-				return clearColor;
-			else
-				return gradient.GetColor(count/(float)maxCount);
+			switch (Main.showBackgroundImage)
+			{
+				case ShowBackgroundImage.EMPTY_CELLS_ONLY:
+					if (count >= maxCount)
+						return clearColor;
+					else
+						return gradient.GetColor(count / (float)maxCount);
+				case ShowBackgroundImage.COMPLETED_ITEM_GROUPS:
+					if (count >= maxCount)
+						return null;
+					else
+						return gradient.GetColor(count / (float)maxCount);
+				case ShowBackgroundImage.COMPLETED_GAMES:
+					if (world != null &&
+						world.hasGoaled)
+						return null;
+					else
+						goto case ShowBackgroundImage.EMPTY_CELLS_ONLY;
+				default:
+					Worker.SetStatus("Show background image has not been implemented");
+					return null;
+			}
 		}
 
 		public override string ToString()
@@ -226,6 +266,16 @@ namespace PT_Piranha
 			sb.AppendLine(count + " / " + maxCount);
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Get a string representation of count / maxCount.<br/>
+		/// Used by the Combo overlay style.
+		/// </summary>
+		/// <returns>count / maxCount as a string</returns>
+		public string ToComboString()
+		{
+			return count + " / " + maxCount;
 		}
 	}
 
@@ -428,6 +478,30 @@ namespace PT_Piranha
 
 			gradient = new Gradient(colors);
 			return true;
+		}
+
+		public static bool TryParseColor(string str, out Color color)
+		{
+			color = default;
+			if (string.IsNullOrWhiteSpace(str))
+				return false;
+			string[] clearColorParts = str.Split('|');
+			if (clearColorParts.Length != 3)
+				return false;
+			if (!byte.TryParse(clearColorParts[0], out byte r) ||
+				!byte.TryParse(clearColorParts[1], out byte g) ||
+				!byte.TryParse(clearColorParts[2], out byte b))
+			{
+				return false;
+			}
+
+			color = Color.FromArgb(r, g, b);
+			return true;
+		}
+
+		public static string GetStringFromColor(Color color)
+		{
+			return color.R.ToString() + '|' + color.G.ToString() + '|' + color.B.ToString();
 		}
 	}
 }
