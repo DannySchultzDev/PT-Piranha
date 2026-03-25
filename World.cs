@@ -281,23 +281,71 @@ namespace PT_Piranha
 
 	public class Gradient
 	{
+		public GradientStyle gradientStyle;
+
 		public List<(float weight, Color color)> colors;
 
 		private (float weight, Color color) lastColor = (-1, Color.Black);
 
-		public Gradient(List<(float weight, Color color)> colors)
+		public Gradient(
+			GradientStyle gradientStyle,
+			List<(float weight, Color color)> colors)
 		{
+			this.gradientStyle = gradientStyle;
 			this.colors = colors;
 		}
 
 		public Gradient(GradientType gradient)
 		{
+			gradientStyle = (GradientStyle)gradient.GradientStyle;
+
 			colors = new List<(float weight, Color color)>();
-			foreach (ColorType color in gradient.Color)
-				colors.Add((color.Weight, Color.FromArgb(color.Red, color.Green, color.Blue)));
+			if (gradient.Color != null &&  gradient.Color.Length > 0)
+				foreach (ColorType color in gradient.Color)
+					colors.Add((color.Weight, Color.FromArgb(color.Red, color.Green, color.Blue)));
+		}
+
+		/// <summary>
+		/// If the Gradient Style is Default Gradient, set the colors of the gradient to the default's colors.
+		/// This is to ensure that when the user changes the Gradient Style, they are not provided with an empty list of colors.
+		/// </summary>
+		public void EnsureColorIfDefaultGradient()
+		{
+			if (gradientStyle != GradientStyle.DEFAULT_GRADIENT)
+				return;
+
+			colors = DesignSettings.DefaultGradient.colors;
 		}
 
 		public Color GetColor(float weight)
+		{
+			switch (gradientStyle)
+			{
+				case GradientStyle.DEFAULT_GRADIENT:
+					return GetColorDefaultGradient(weight);
+				case GradientStyle.STANDARD:
+					return GetColorStandard(weight);
+				case GradientStyle.RAW:
+					return GetColorRaw(weight);
+				case GradientStyle.CEILING:
+					return GetColorCeiling(weight);
+				default:
+					throw new Exception("Gradient Style " +  gradientStyle + " not implemented yet.");
+			}
+		}
+
+		private Color GetColorDefaultGradient(float weight)
+		{
+			Gradient defaultGradient = DesignSettings.DefaultGradient;
+
+			//Don't entertain the possibility of an infinite loop.
+			if (defaultGradient.gradientStyle == GradientStyle.DEFAULT_GRADIENT)
+				defaultGradient.gradientStyle = GradientStyle.STANDARD;
+
+			return defaultGradient.GetColor(weight);
+		}
+
+		private Color GetColorStandard(float weight)
 		{
 			if (weight == lastColor.weight)
 				return lastColor.color;
@@ -396,6 +444,91 @@ namespace PT_Piranha
 			return returnColor;
 		}
 
+		private Color GetColorRaw(float weight)
+		{
+			if (weight == lastColor.weight)
+				return lastColor.color;
+
+			(float weight, Color color)? startColor = null;
+			(float weight, Color color)? endColor = null;
+
+			foreach ((float weight, Color color) color in colors)
+			{
+				if (color.weight == weight)
+					return color.color;
+				else if (color.weight < weight)
+				{
+					if (startColor == null)
+						startColor = color;
+					else if (color.weight > startColor.Value.weight)
+						startColor = color;
+				}
+				else
+				{
+					if (endColor == null)
+						endColor = color;
+					else if (color.weight < endColor.Value.weight)
+						endColor = color;
+				}
+			}
+
+			if (startColor == null && endColor == null)
+				throw new Exception("Gradient missing Color.");
+			else if (startColor == null)
+				return endColor.Value.color;
+			else if (endColor == null)
+				return startColor.Value.color;
+
+			float lerpAmt = (weight - startColor.Value.weight) / (endColor.Value.weight - startColor.Value.weight);
+
+			return Color.FromArgb(
+				(int)((endColor.Value.color.R - startColor.Value.color.R) * lerpAmt) + startColor.Value.color.R,
+				(int)((endColor.Value.color.G - startColor.Value.color.G) * lerpAmt) + startColor.Value.color.G,
+				(int)((endColor.Value.color.B - startColor.Value.color.B) * lerpAmt) + startColor.Value.color.B);
+		}
+
+		private Color GetColorCeiling(float weight)
+		{
+			if (weight == lastColor.weight)
+				return lastColor.color;
+
+			float lowestWeight = float.MaxValue;
+			Color? lowestColor = null;
+			
+			foreach (var color in colors)
+			{
+				if (color.weight > weight && color.weight < lowestWeight)
+				{
+					lowestWeight = color.weight;
+					lowestColor = color.color;
+				}
+			}
+
+			//There was no color with a heigher weight than the weight parameter.
+			//Get the heighest weight instead.
+			if (lowestColor == null)
+			{
+				lowestWeight = float.MinValue;
+				foreach (var color in colors)
+				{
+					if (color.weight > lowestWeight)
+					{
+						lowestWeight = color.weight;
+						lowestColor = color.color;
+					}
+				}
+			}
+
+			//There are no colors in the gradient.
+			//Throw an exception.
+			if (lowestColor == null)
+			{
+				throw new Exception("Gradient missing Color.");
+			}
+
+			return (Color)lowestColor;
+		}
+
 		public Color GetFirstColor()
 		{
 			float lowestWeight = colors.First().weight;
@@ -432,7 +565,11 @@ namespace PT_Piranha
 
 		public override string ToString()
 		{
+			//New gradients should include their style.
 			StringBuilder sb = new StringBuilder();
+			sb.Append(((int)gradientStyle).ToString());
+			sb.Append("||");
+
 			foreach ((float weight, Color color) color in colors)
 			{
 				sb.AppendLine(
@@ -450,6 +587,15 @@ namespace PT_Piranha
 			{
 				gradient = null;
 				return false;
+			}
+
+			GradientStyle style = GradientStyle.STANDARD;
+			//New Gradients contain GradientStyle information. Old Gradients do not.
+			if (str.Contains("||"))
+			{
+				string[] headerSplit = str.Split("||");
+				str = headerSplit[1];
+				style = (GradientStyle)int.Parse(headerSplit[0]);
 			}
 
 			List<(float weight, Color color)> colors = new List<(float weight, Color color)>();
@@ -476,7 +622,7 @@ namespace PT_Piranha
 				}
 			}
 
-			gradient = new Gradient(colors);
+			gradient = new Gradient(style, colors);
 			return true;
 		}
 
@@ -503,5 +649,25 @@ namespace PT_Piranha
 		{
 			return color.R.ToString() + '|' + color.G.ToString() + '|' + color.B.ToString();
 		}
+	}
+
+	public enum GradientStyle
+	{
+		/// <summary>
+		/// Use the default gradient as this gradient.
+		/// </summary>
+		DEFAULT_GRADIENT = 0,
+		/// <summary>
+		/// Standard gradient that uses expected interpolation.
+		/// </summary>
+		STANDARD = 1,
+		/// <summary>
+		/// Standard gradient that interpolates using raw RGB values instead of HSV.
+		/// </summary>
+		RAW = 2,
+		/// <summary>
+		/// Gradient that uses the next heighest weight as its color.
+		/// </summary>
+		CEILING = 3
 	}
 }

@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,6 +25,31 @@ namespace PT_Piranha
 			progressBarStyleTrueDefault = ProgressBarStyle.LOCATIONS.ToString(),
 			overlayStyleTrueDefault = OverlayStyle.COMBO.ToString(),
 			overlayInterpolationTrueDefault = OverlayInterpolation.DEFAULT.ToString();
+
+		private static Gradient defaultGradient = null;
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public static Gradient DefaultGradient
+		{
+			get
+			{
+				if (defaultGradient != null)
+				{
+					return defaultGradient;
+				}
+				else
+				{
+					if (!Gradient.TryParse(RegistryHelper.GetValue(RegistryName.GRADIENT_DEFAULT, DesignSettings.gradientTrueDefault), out Gradient defaultGradient))
+					{
+						if (!Gradient.TryParse(DesignSettings.gradientTrueDefault, out defaultGradient))
+							throw new Exception("Gradient's default and true default are invalid.");
+						RegistryHelper.SetValue(RegistryName.GRADIENT_DEFAULT, DesignSettings.gradientTrueDefault);
+					}
+					DesignSettings.defaultGradient = defaultGradient;
+					return defaultGradient;
+				}
+			}
+			private set { }
+		}
 
 		public DesignSettings()
 		{
@@ -221,6 +247,9 @@ namespace PT_Piranha
 				gradientDialog.Gradient = defaultGradient;
 			if (gradientDialog.ShowDialog() == DialogResult.OK)
 			{
+				//Don't let the user create an infinite loop.
+				if (gradientDialog.Gradient.gradientStyle == GradientStyle.DEFAULT_GRADIENT)
+					gradientDialog.Gradient.gradientStyle = GradientStyle.STANDARD;
 				defaultGradientButton.Tag = gradientDialog.Gradient;
 				defaultGradientButton.Refresh();
 			}
@@ -258,6 +287,7 @@ namespace PT_Piranha
 
 		private void saveButton_Click(object sender, EventArgs e)
 		{
+			DesignSettings.defaultGradient = null;
 			Gradient? defaultGradient = defaultGradientButton.Tag as Gradient;
 			string defaultGradientString;
 			if (defaultGradient == null)

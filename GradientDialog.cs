@@ -28,7 +28,7 @@ namespace PT_Piranha
 
 				gradient = value;
 				UpdateBitmap();
-				UpdateDataGridView();
+				UpdateData();
 			}
 		}
 
@@ -49,7 +49,7 @@ namespace PT_Piranha
 
 			for (int x = 0; x < bitmap.Width; ++x)
 			{
-				Color color = gradient.GetColor(x/(float)bitmap.Width);
+				Color color = gradient.GetColor(x / (float)bitmap.Width);
 				for (int y = 0; y < bitmap.Height; ++y)
 				{
 					bitmap.SetPixel(x, y, color);
@@ -59,8 +59,11 @@ namespace PT_Piranha
 			gradientPictureBox.Refresh();
 		}
 
-		private void UpdateDataGridView()
+		private void UpdateData()
 		{
+			gradientStyleComboBox.SelectedIndex = (int)gradient.gradientStyle;
+			gradientStyleComboBox.Refresh();
+
 			gradientDataGridView.Rows.Clear();
 
 			foreach ((float weight, Color color) color in gradient.colors)
@@ -131,10 +134,10 @@ namespace PT_Piranha
 				colors.Add((weight, color));
 			}
 
-			if (colors.Count < 1) 
+			if (colors.Count < 1)
 				return;
 
-			gradient = new Gradient(colors);
+			gradient = new Gradient((GradientStyle)gradientStyleComboBox.SelectedIndex, colors);
 			UpdateBitmap();
 		}
 
@@ -146,6 +149,13 @@ namespace PT_Piranha
 		private void RemoveRow(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
 			UpdateGradient();
+		}
+
+		private void gradientStyleComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateGradient();
+			gradientDataGridView.Enabled = gradientStyleComboBox.SelectedIndex != 0;
+			gradientDataGridView.Visible = gradientStyleComboBox.SelectedIndex != 0;
 		}
 	}
 }

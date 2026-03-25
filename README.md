@@ -72,7 +72,6 @@ Adding additional design styles (Show image when all locations checked).<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
 <br/>
 Major changes:<br/>
-Additional Gradient Styles (clamp to next).<br/>
 Add Hot Generator (Generate a tracker during a game, using the games internal messages to build up the tracker).<br/>
 Refactoring for code readability.<br/>
 Shoal Support (Reference multiple .piranha files so changing the .piranha files changes all .shoal files referencing).

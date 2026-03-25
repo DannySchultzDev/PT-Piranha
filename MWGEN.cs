@@ -163,12 +163,9 @@ namespace PT_Piranha
 				Gradient gradient = imageButton.Tag as Gradient;
 				if (gradient == null)
 				{
-					if (!Gradient.TryParse(
-						RegistryHelper.GetValue(RegistryName.GRADIENT_DEFAULT,
-						DesignSettings.gradientTrueDefault),
-						out gradient))
-						return;
+					gradient = new Gradient(GradientStyle.DEFAULT_GRADIENT, new List<(float weight, Color color)>());
 				}
+				gradient.EnsureColorIfDefaultGradient();
 
 				imageButton.Tag = gradient;
 
@@ -179,6 +176,20 @@ namespace PT_Piranha
 					for (int y = 0; y < bitmap.Height; ++y)
 					{
 						bitmap.SetPixel(x, y, color);
+					}
+				}
+
+				if (gradient.gradientStyle == GradientStyle.DEFAULT_GRADIENT)
+				{
+					int boundSize = 3;
+					Color boundingColor = Color.Olive;
+					for (int x = 0; x < bitmap.Width; ++x)
+					{
+						for (int bound = 0; bound < boundSize; ++bound)
+						{
+							bitmap.SetPixel(x, bound, boundingColor);
+							bitmap.SetPixel(x, bitmap.Height - 1 - bound, boundingColor);
+						}
 					}
 				}
 
@@ -385,6 +396,8 @@ namespace PT_Piranha
 					else if (gradient == null)
 						throw new Exception("Item Group " + index + " has an invalid Gradient.");
 
+					gradient.EnsureColorIfDefaultGradient();
+
 					List<(string name, uint value)> itemGroupParts = new List<(string name, uint value)>();
 
 					dict[gameIndex].itemGroups.Add(index, (
@@ -456,7 +469,7 @@ namespace PT_Piranha
 							colorNodes.Add(colorNode);
 						}
 						gradientNode.Color = colorNodes.ToArray();
-						gradientNode.GradientStyle = 1;
+						gradientNode.GradientStyle = (uint)itemGroup.gradient.gradientStyle;
 						itemGroupNode.ColorGradient = gradientNode;
 
 						ColorType clearColorNode = new ColorType();

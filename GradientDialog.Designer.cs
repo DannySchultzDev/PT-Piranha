@@ -28,130 +28,149 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.mainTableLayoutPannel = new System.Windows.Forms.TableLayoutPanel();
-			this.gradientPictureBox = new System.Windows.Forms.PictureBox();
-			this.gradientDataGridView = new System.Windows.Forms.DataGridView();
-			this.weightColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.colorColumn = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.okButton = new System.Windows.Forms.Button();
-			this.cancelButton = new System.Windows.Forms.Button();
-			this.dataGridViewButtonColumn1 = new System.Windows.Forms.DataGridViewButtonColumn();
-			this.mainTableLayoutPannel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.gradientPictureBox)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.gradientDataGridView)).BeginInit();
-			this.SuspendLayout();
+			mainTableLayoutPannel = new TableLayoutPanel();
+			gradientPictureBox = new PictureBox();
+			gradientDataGridView = new DataGridView();
+			weightColumn = new DataGridViewTextBoxColumn();
+			colorColumn = new DataGridViewButtonColumn();
+			okButton = new Button();
+			cancelButton = new Button();
+			gradientStyleComboBox = new ComboBox();
+			dataGridViewButtonColumn1 = new DataGridViewButtonColumn();
+			mainTableLayoutPannel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)gradientPictureBox).BeginInit();
+			((System.ComponentModel.ISupportInitialize)gradientDataGridView).BeginInit();
+			SuspendLayout();
 			// 
 			// mainTableLayoutPannel
 			// 
-			this.mainTableLayoutPannel.ColumnCount = 2;
-			this.mainTableLayoutPannel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.mainTableLayoutPannel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.mainTableLayoutPannel.Controls.Add(this.gradientPictureBox, 0, 0);
-			this.mainTableLayoutPannel.Controls.Add(this.gradientDataGridView, 0, 1);
-			this.mainTableLayoutPannel.Controls.Add(this.okButton, 0, 2);
-			this.mainTableLayoutPannel.Controls.Add(this.cancelButton, 1, 2);
-			this.mainTableLayoutPannel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.mainTableLayoutPannel.Location = new System.Drawing.Point(0, 0);
-			this.mainTableLayoutPannel.Name = "mainTableLayoutPannel";
-			this.mainTableLayoutPannel.RowCount = 3;
-			this.mainTableLayoutPannel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-			this.mainTableLayoutPannel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.mainTableLayoutPannel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
-			this.mainTableLayoutPannel.Size = new System.Drawing.Size(353, 450);
-			this.mainTableLayoutPannel.TabIndex = 0;
+			mainTableLayoutPannel.ColumnCount = 2;
+			mainTableLayoutPannel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			mainTableLayoutPannel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+			mainTableLayoutPannel.Controls.Add(gradientPictureBox, 0, 0);
+			mainTableLayoutPannel.Controls.Add(gradientDataGridView, 0, 2);
+			mainTableLayoutPannel.Controls.Add(okButton, 0, 3);
+			mainTableLayoutPannel.Controls.Add(cancelButton, 1, 3);
+			mainTableLayoutPannel.Controls.Add(gradientStyleComboBox, 0, 1);
+			mainTableLayoutPannel.Dock = DockStyle.Fill;
+			mainTableLayoutPannel.Location = new Point(0, 0);
+			mainTableLayoutPannel.Margin = new Padding(3, 4, 3, 4);
+			mainTableLayoutPannel.Name = "mainTableLayoutPannel";
+			mainTableLayoutPannel.RowCount = 4;
+			mainTableLayoutPannel.RowStyles.Add(new RowStyle(SizeType.Absolute, 125F));
+			mainTableLayoutPannel.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
+			mainTableLayoutPannel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+			mainTableLayoutPannel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+			mainTableLayoutPannel.Size = new Size(392, 562);
+			mainTableLayoutPannel.TabIndex = 0;
 			// 
 			// gradientPictureBox
 			// 
-			this.mainTableLayoutPannel.SetColumnSpan(this.gradientPictureBox, 2);
-			this.gradientPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gradientPictureBox.Location = new System.Drawing.Point(3, 3);
-			this.gradientPictureBox.Name = "gradientPictureBox";
-			this.gradientPictureBox.Size = new System.Drawing.Size(347, 94);
-			this.gradientPictureBox.TabIndex = 0;
-			this.gradientPictureBox.TabStop = false;
+			mainTableLayoutPannel.SetColumnSpan(gradientPictureBox, 2);
+			gradientPictureBox.Dock = DockStyle.Fill;
+			gradientPictureBox.Location = new Point(3, 4);
+			gradientPictureBox.Margin = new Padding(3, 4, 3, 4);
+			gradientPictureBox.Name = "gradientPictureBox";
+			gradientPictureBox.Size = new Size(386, 117);
+			gradientPictureBox.TabIndex = 0;
+			gradientPictureBox.TabStop = false;
 			// 
 			// gradientDataGridView
 			// 
-			this.gradientDataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-			this.gradientDataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
-			this.gradientDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.gradientDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.weightColumn,
-            this.colorColumn});
-			this.mainTableLayoutPannel.SetColumnSpan(this.gradientDataGridView, 2);
-			this.gradientDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.gradientDataGridView.GridColor = System.Drawing.SystemColors.Control;
-			this.gradientDataGridView.Location = new System.Drawing.Point(3, 103);
-			this.gradientDataGridView.Name = "gradientDataGridView";
-			this.gradientDataGridView.RowHeadersWidth = 62;
-			this.gradientDataGridView.RowTemplate.Height = 28;
-			this.gradientDataGridView.Size = new System.Drawing.Size(347, 294);
-			this.gradientDataGridView.TabIndex = 1;
-			this.gradientDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ClickCell);
-			this.gradientDataGridView.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.PaintCell);
-			this.gradientDataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ChangeCellValue);
-			this.gradientDataGridView.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RemoveRow);
+			gradientDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+			gradientDataGridView.BackgroundColor = SystemColors.Control;
+			gradientDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			gradientDataGridView.Columns.AddRange(new DataGridViewColumn[] { weightColumn, colorColumn });
+			mainTableLayoutPannel.SetColumnSpan(gradientDataGridView, 2);
+			gradientDataGridView.Dock = DockStyle.Fill;
+			gradientDataGridView.GridColor = SystemColors.Control;
+			gradientDataGridView.Location = new Point(3, 179);
+			gradientDataGridView.Margin = new Padding(3, 4, 3, 4);
+			gradientDataGridView.Name = "gradientDataGridView";
+			gradientDataGridView.RowHeadersWidth = 62;
+			gradientDataGridView.RowTemplate.Height = 28;
+			gradientDataGridView.Size = new Size(386, 319);
+			gradientDataGridView.TabIndex = 1;
+			gradientDataGridView.CellContentClick += ClickCell;
+			gradientDataGridView.CellPainting += PaintCell;
+			gradientDataGridView.CellValueChanged += ChangeCellValue;
+			gradientDataGridView.RowsRemoved += RemoveRow;
 			// 
 			// weightColumn
 			// 
-			this.weightColumn.HeaderText = "Weight";
-			this.weightColumn.MinimumWidth = 8;
-			this.weightColumn.Name = "weightColumn";
+			weightColumn.HeaderText = "Weight";
+			weightColumn.MinimumWidth = 8;
+			weightColumn.Name = "weightColumn";
 			// 
 			// colorColumn
 			// 
-			this.colorColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.colorColumn.HeaderText = "Color";
-			this.colorColumn.MinimumWidth = 8;
-			this.colorColumn.Name = "colorColumn";
+			colorColumn.FlatStyle = FlatStyle.Flat;
+			colorColumn.HeaderText = "Color";
+			colorColumn.MinimumWidth = 8;
+			colorColumn.Name = "colorColumn";
 			// 
 			// okButton
 			// 
-			this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.okButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.okButton.Location = new System.Drawing.Point(3, 403);
-			this.okButton.Name = "okButton";
-			this.okButton.Size = new System.Drawing.Size(170, 44);
-			this.okButton.TabIndex = 2;
-			this.okButton.Text = "OK";
-			this.okButton.UseVisualStyleBackColor = true;
+			okButton.DialogResult = DialogResult.OK;
+			okButton.Dock = DockStyle.Fill;
+			okButton.Location = new Point(3, 506);
+			okButton.Margin = new Padding(3, 4, 3, 4);
+			okButton.Name = "okButton";
+			okButton.Size = new Size(190, 52);
+			okButton.TabIndex = 2;
+			okButton.Text = "OK";
+			okButton.UseVisualStyleBackColor = true;
 			// 
 			// cancelButton
 			// 
-			this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelButton.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.cancelButton.Location = new System.Drawing.Point(179, 403);
-			this.cancelButton.Name = "cancelButton";
-			this.cancelButton.Size = new System.Drawing.Size(171, 44);
-			this.cancelButton.TabIndex = 3;
-			this.cancelButton.Text = "Cancel";
-			this.cancelButton.UseVisualStyleBackColor = true;
+			cancelButton.DialogResult = DialogResult.Cancel;
+			cancelButton.Dock = DockStyle.Fill;
+			cancelButton.Location = new Point(199, 506);
+			cancelButton.Margin = new Padding(3, 4, 3, 4);
+			cancelButton.Name = "cancelButton";
+			cancelButton.Size = new Size(190, 52);
+			cancelButton.TabIndex = 3;
+			cancelButton.Text = "Cancel";
+			cancelButton.UseVisualStyleBackColor = true;
+			// 
+			// gradientStyleComboBox
+			// 
+			mainTableLayoutPannel.SetColumnSpan(gradientStyleComboBox, 2);
+			gradientStyleComboBox.Dock = DockStyle.Fill;
+			gradientStyleComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
+			gradientStyleComboBox.FormattingEnabled = true;
+			gradientStyleComboBox.Items.AddRange(new object[] { "Default Gradient", "Standard", "Raw", "Ceiling" });
+			gradientStyleComboBox.Location = new Point(3, 128);
+			gradientStyleComboBox.Name = "gradientStyleComboBox";
+			gradientStyleComboBox.Size = new Size(386, 33);
+			gradientStyleComboBox.TabIndex = 4;
+			gradientStyleComboBox.SelectedIndexChanged += gradientStyleComboBox_SelectedIndexChanged;
 			// 
 			// dataGridViewButtonColumn1
 			// 
-			this.dataGridViewButtonColumn1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.dataGridViewButtonColumn1.HeaderText = "Color";
-			this.dataGridViewButtonColumn1.MinimumWidth = 8;
-			this.dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
-			this.dataGridViewButtonColumn1.Width = 141;
+			dataGridViewButtonColumn1.FlatStyle = FlatStyle.Flat;
+			dataGridViewButtonColumn1.HeaderText = "Color";
+			dataGridViewButtonColumn1.MinimumWidth = 8;
+			dataGridViewButtonColumn1.Name = "dataGridViewButtonColumn1";
+			dataGridViewButtonColumn1.Width = 141;
 			// 
 			// GradientDialog
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(353, 450);
-			this.Controls.Add(this.mainTableLayoutPannel);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "GradientDialog";
-			this.ShowIcon = false;
-			this.Text = "Gradient";
-			this.mainTableLayoutPannel.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.gradientPictureBox)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.gradientDataGridView)).EndInit();
-			this.ResumeLayout(false);
-
+			AutoScaleDimensions = new SizeF(10F, 25F);
+			AutoScaleMode = AutoScaleMode.Font;
+			ClientSize = new Size(392, 562);
+			Controls.Add(mainTableLayoutPannel);
+			FormBorderStyle = FormBorderStyle.FixedDialog;
+			Margin = new Padding(3, 4, 3, 4);
+			MaximizeBox = false;
+			MinimizeBox = false;
+			Name = "GradientDialog";
+			ShowIcon = false;
+			Text = "Gradient";
+			mainTableLayoutPannel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)gradientPictureBox).EndInit();
+			((System.ComponentModel.ISupportInitialize)gradientDataGridView).EndInit();
+			ResumeLayout(false);
 		}
 
 		#endregion
@@ -164,5 +183,6 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn weightColumn;
 		private System.Windows.Forms.DataGridViewButtonColumn colorColumn;
 		private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
+		private ComboBox gradientStyleComboBox;
 	}
 }
