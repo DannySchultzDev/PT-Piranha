@@ -151,8 +151,25 @@ namespace PT_Piranha
 			{
 				if (itemGroup.isLocations)
 				{
-					itemGroup.count = session.Locations.AllLocationsChecked.Count;
-					needUpdate = true;
+					if (itemGroup.targets.Count > 0)
+					{
+						if (newCheckedLocations != null)
+						{
+							foreach (var target in itemGroup.targets)
+							{
+								foreach (long checkedLocationID in newCheckedLocations)
+								{
+									if (target.name.Equals(session.Locations.GetLocationNameFromId(checkedLocationID)))
+										itemGroup.count += (int)target.value;
+								}
+							}
+						}
+					}
+					else
+					{
+						itemGroup.count = session.Locations.AllLocationsChecked.Count;
+						needUpdate = true;
+					}
 				}
 			}
 			if (needUpdate)
@@ -164,8 +181,18 @@ namespace PT_Piranha
 			locationsTotal = (uint)session.Locations.AllLocations.Count;
 
 			foreach (ItemGroup itemGroup in itemGroups)
+			{
 				if (itemGroup.isLocations)
-					itemGroup.maxCount = session.Locations.AllLocations.Count;
+				{
+					if (itemGroup.targets.Count > 0)
+					{
+						foreach (var target in itemGroup.targets)
+							itemGroup.maxCount += (int)target.value;
+					}	
+					else
+						itemGroup.maxCount = session.Locations.AllLocations.Count;
+				}
+			}
 		}
 
 		public void ScoutReceivedItem(ScoutedItemInfo itemInfo)

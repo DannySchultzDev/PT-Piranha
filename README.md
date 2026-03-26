@@ -66,7 +66,6 @@ Add auto refresh if disconnected or at least a button to reload.<br/>
 Images should be auto cropped for transparency, and then given a buffer.<br/>
 Add the ability to move rows in the Multiworld Tracker Generator.<br/>
 Deleting or moving a row in the Multiworld Tracker Generator should adjust other tables.<br/>
-Allow specific locations to be tracked by adding them to item group parts (Assuming is location is checked for the item group).<br/>
 Minor improvements to some design styles (Seperate games has visible seams, Voronoi doesn't get center of mass).<br/>
 Adding additional design styles (Show image when all locations checked).<br/>
 Probably a whole bunch of stuff I haven't thought of.<br/>
